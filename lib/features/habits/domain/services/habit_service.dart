@@ -58,7 +58,6 @@ class HabitService {
         if (habit.frequency.type == FrequencyType.timesPerWeek) {
           // Check if the week of currentDate met the target.
           final start = DateUtilsLocal.startOfWeek(currentDate);
-          final end = DateUtilsLocal.endOfWeek(currentDate);
           
           // Count completions in this week up to 'currentDate' or the whole week?
           // If the week is completely in the past, and we failed the target, we break.

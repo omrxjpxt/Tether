@@ -7,7 +7,6 @@ import 'package:tether/features/habits/domain/services/habit_service.dart';
 void main() {
   group('HabitService', () {
     final now = DateTime(2026, 9, 28, 12, 0); // Monday
-    final yesterday = now.subtract(const Duration(days: 1));
     final habit = Habit(
       id: '1',
       trigger: 'Wake up',
