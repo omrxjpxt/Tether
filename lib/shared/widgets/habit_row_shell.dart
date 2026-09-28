@@ -19,25 +19,34 @@ class HabitRowShell extends StatelessWidget {
     final theme = Theme.of(context);
     return Material(
       color: theme.colorScheme.surface,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            border: Border.all(color: theme.dividerColor, width: 1),
-            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: theme.dividerColor.withValues(alpha: 0.7),
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              leading,
-              const SizedBox(width: 16),
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: leading,
+              ),
+              const SizedBox(width: 14),
               Expanded(child: content),
               if (trailing != null) ...[
-                const SizedBox(width: 16),
-                trailing!,
+                const SizedBox(width: 12),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: trailing!,
+                ),
               ],
             ],
           ),

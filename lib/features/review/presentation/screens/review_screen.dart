@@ -71,9 +71,10 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
           constraints: const BoxConstraints(maxWidth: 620),
           child: CustomScrollView(
             slivers: [
+              // Header
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+                  padding: const EdgeInsets.fromLTRB(24, 40, 24, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -81,11 +82,12 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                         'Weekly Review',
                         style: AppTypography.headingLarge,
                       ),
-                      const SizedBox(height: AppSpacing.xs),
+                      const SizedBox(height: 6),
                       Text(
                         dateRange,
-                        style: AppTypography.metadata.copyWith(
-                          color: theme.textTheme.bodyMedium?.color,
+                        style: AppTypography.caption.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                          letterSpacing: 0.2,
                         ),
                       ),
                     ],
@@ -98,11 +100,25 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                   if (habits.isEmpty) {
                     return SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Text(
-                          'Your first week is still ahead.',
-                          style: AppTypography.body,
-                          textAlign: TextAlign.center,
+                        padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Your first week is still ahead.',
+                              style: AppTypography.body.copyWith(
+                                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Create habits from the Today tab to see your review here.',
+                              style: AppTypography.caption.copyWith(
+                                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.35),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -135,30 +151,64 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          const SizedBox(height: 32),
+
+                          // Stats row
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Habits completed', style: AppTypography.metadata),
-                                  const SizedBox(height: 4),
-                                  Text('$totalCompleted / $totalExpected', style: AppTypography.headingSection),
-                                ],
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'COMPLETED',
+                                      style: AppTypography.metadata.copyWith(
+                                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      '$totalCompleted / $totalExpected',
+                                      style: AppTypography.headingLarge.copyWith(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text('Completion rate', style: AppTypography.metadata),
-                                  const SizedBox(height: 4),
-                                  Text('$rate%', style: AppTypography.headingSection),
+                                  Text(
+                                    'RATE',
+                                    style: AppTypography.metadata.copyWith(
+                                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    '$rate%',
+                                    style: AppTypography.headingLarge.copyWith(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
                           ),
-                          const SizedBox(height: AppSpacing.xl),
-                          Text('CONSISTENCY', style: AppTypography.metadata),
-                          const SizedBox(height: AppSpacing.s),
+
+                          const SizedBox(height: 32),
+
+                          // Consistency
+                          Text(
+                            'CONSISTENCY',
+                            style: AppTypography.metadata.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.m),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -168,18 +218,24 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                                     Text(
                                       ['M', 'T', 'W', 'T', 'F', 'S', 'S'][i],
                                       style: AppTypography.metadata.copyWith(
-                                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.35),
+                                        fontSize: 11,
                                       ),
                                     ),
                                     const SizedBox(height: 8),
                                     Container(
-                                      width: 24,
-                                      height: 24,
+                                      width: 28,
+                                      height: 28,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: weekConsistency[i] ? theme.colorScheme.primary : Colors.transparent,
+                                        color: weekConsistency[i]
+                                            ? theme.colorScheme.primary.withValues(alpha: 0.85)
+                                            : Colors.transparent,
                                         border: Border.all(
-                                          color: weekConsistency[i] ? theme.colorScheme.primary : theme.dividerColor,
+                                          color: weekConsistency[i]
+                                              ? theme.colorScheme.primary.withValues(alpha: 0.85)
+                                              : theme.dividerColor.withValues(alpha: 0.5),
+                                          width: weekConsistency[i] ? 1 : 0.5,
                                         ),
                                       ),
                                     ),
@@ -187,9 +243,17 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                                 ),
                             ],
                           ),
-                          const SizedBox(height: AppSpacing.xxl),
-                          Text('HABITS', style: AppTypography.metadata),
-                          const SizedBox(height: AppSpacing.s),
+
+                          const SizedBox(height: 32),
+
+                          // Habits breakdown
+                          Text(
+                            'HABITS',
+                            style: AppTypography.metadata.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.m),
                           ...habits.map((h) {
                             final exp = HabitService.expectedCompletions(h, weekStart, weekEnd);
                             final act = HabitService.actualCompletions(h, weekStart, weekEnd);
@@ -197,11 +261,12 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                             return Padding(
                               padding: const EdgeInsets.only(bottom: AppSpacing.m),
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
                                     child: Text(
                                       'After I ${h.trigger}, I will ${h.action}.',
-                                      style: AppTypography.body,
+                                      style: AppTypography.body.copyWith(fontSize: 15),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -210,8 +275,20 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Text('$act / $exp', style: AppTypography.body.copyWith(fontWeight: FontWeight.w500)),
-                                      Text('$pct%', style: AppTypography.metadata.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7))),
+                                      Text(
+                                        '$act / $exp',
+                                        style: AppTypography.body.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      Text(
+                                        '$pct%',
+                                        style: AppTypography.caption.copyWith(
+                                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                                          fontSize: 12,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -223,7 +300,12 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                     ),
                   );
                 },
-                loading: () => const SliverToBoxAdapter(child: Center(child: CircularProgressIndicator())),
+                loading: () => const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 64),
+                    child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                  ),
+                ),
                 error: (err, _) => const SliverToBoxAdapter(child: Text('Error loading habits')),
               ),
               
@@ -239,9 +321,19 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('FOCUS', style: AppTypography.metadata),
+                            Text(
+                              'FOCUS',
+                              style: AppTypography.metadata.copyWith(
+                                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                              ),
+                            ),
                             const SizedBox(height: AppSpacing.s),
-                            Text('No focus sessions yet.', style: AppTypography.body),
+                            Text(
+                              'No focus sessions this week.',
+                              style: AppTypography.body.copyWith(
+                                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -259,25 +351,55 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('FOCUS', style: AppTypography.metadata),
+                          Text(
+                            'FOCUS',
+                            style: AppTypography.metadata.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                            ),
+                          ),
                           const SizedBox(height: AppSpacing.m),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Sessions', style: AppTypography.metadata),
-                                  const SizedBox(height: 4),
-                                  Text('${weekSessions.length}', style: AppTypography.headingSection),
-                                ],
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'SESSIONS',
+                                      style: AppTypography.metadata.copyWith(
+                                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      '${weekSessions.length}',
+                                      style: AppTypography.headingLarge.copyWith(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text('Time focused', style: AppTypography.metadata),
-                                  const SizedBox(height: 4),
-                                  Text(timeStr, style: AppTypography.headingSection),
+                                  Text(
+                                    'TIME',
+                                    style: AppTypography.metadata.copyWith(
+                                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    timeStr,
+                                    style: AppTypography.headingLarge.copyWith(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
@@ -291,7 +413,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                 error: (err, _) => const SliverToBoxAdapter(child: SizedBox()),
               ),
               
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl)),
+              const SliverToBoxAdapter(child: SizedBox(height: 32)),
 
               SliverToBoxAdapter(
                 child: Padding(
@@ -299,27 +421,24 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('REFLECT', style: AppTypography.metadata),
+                      Text(
+                        'REFLECT',
+                        style: AppTypography.metadata.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                        ),
+                      ),
                       const SizedBox(height: AppSpacing.s),
                       TextField(
                         controller: _notesController,
                         maxLines: 4,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'What worked this week?\nWhat should I change next week?',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: theme.dividerColor),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: theme.dividerColor),
-                          ),
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.l),
+                      const SizedBox(height: AppSpacing.m),
                       SizedBox(
                         width: double.infinity,
-                        child: OutlinedButton(
+                        child: TextButton(
                           onPressed: () {
                             HapticFeedback.lightImpact();
                             int exp = 0;
@@ -339,11 +458,23 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                             );
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Review saved')));
                           },
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          style: TextButton.styleFrom(
+                            foregroundColor: theme.colorScheme.primary,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: BorderSide(
+                                color: theme.colorScheme.primary.withValues(alpha: 0.25),
+                              ),
+                            ),
                           ),
-                          child: const Text('Save Review'),
+                          child: Text(
+                            'Save Review',
+                            style: AppTypography.secondary.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 100),

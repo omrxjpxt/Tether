@@ -28,7 +28,7 @@ void main() {
 
     expect(find.text('Tether'), findsOneWidget);
     expect(find.text('Build habits that stick.'), findsOneWidget);
-    expect(find.text('"Connect a small action to something you already do."'), findsOneWidget);
+    expect(find.textContaining('Connect a small action to'), findsOneWidget);
     expect(find.text('START WITH A TEMPLATE'), findsOneWidget);
     expect(find.text('Create custom habit'), findsOneWidget);
     expect(find.text('Skip'), findsOneWidget);

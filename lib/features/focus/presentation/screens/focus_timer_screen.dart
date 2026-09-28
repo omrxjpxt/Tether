@@ -73,137 +73,195 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: timerData.state == TimerState.running || timerData.state == TimerState.paused
             ? IconButton(
-                icon: const Icon(Icons.close),
+                icon: const Icon(Icons.close, size: 22),
                 onPressed: _confirmCancel,
               )
             : IconButton(
-                icon: const Icon(Icons.keyboard_arrow_down),
+                icon: const Icon(Icons.keyboard_arrow_down, size: 26),
                 onPressed: () => Navigator.of(context).pop(),
               ),
       ),
       body: SafeArea(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Focus',
-                style: AppTypography.metadata.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.m),
-              focusAsync.when(
-                data: (focus) => Text(
-                  focus?.priorityText ?? 'General Focus',
-                  style: AppTypography.headingLarge,
-                  textAlign: TextAlign.center,
-                ),
-                loading: () => const SizedBox(),
-                error: (err, stack) => const SizedBox(),
-              ),
-              const SizedBox(height: AppSpacing.xxl * 2),
-              
-              if (timerData.state == TimerState.completed) ...[
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Spacer(flex: 2),
+                
                 Text(
-                  'Focus session complete',
-                  style: AppTypography.headingSection,
+                  'Focus',
+                  style: AppTypography.metadata.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.s),
-                Text(
-                  '${timerData.targetDurationMinutes} min',
-                  style: AppTypography.body.copyWith(
-                    color: theme.textTheme.bodyMedium?.color,
+                focusAsync.when(
+                  data: (focus) => Text(
+                    focus?.priorityText ?? 'General Focus',
+                    style: AppTypography.headingSection.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primary,
-                    foregroundColor: theme.colorScheme.onPrimary,
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  ),
-                  child: const Text('Done'),
-                ),
-              ] else ...[
-                Text(
-                  _formatTime(timerData.remainingSeconds),
-                  style: TextStyle(
-                    fontSize: 72,
-                    fontWeight: FontWeight.w300,
-                    letterSpacing: -2,
-                    color: theme.textTheme.bodyLarge?.color,
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
+                  loading: () => const SizedBox(),
+                  error: (err, stack) => const SizedBox(),
                 ),
                 
-                const SizedBox(height: AppSpacing.xxl),
+                const Spacer(flex: 2),
                 
-                if (timerData.state == TimerState.idle) ...[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _DurationButton(
-                        minutes: 25,
-                        isSelected: timerData.targetDurationMinutes == 25,
-                        onTap: () => ref.read(timerProvider.notifier).setDuration(25),
-                      ),
-                      const SizedBox(width: AppSpacing.m),
-                      _DurationButton(
-                        minutes: 50,
-                        isSelected: timerData.targetDurationMinutes == 50,
-                        onTap: () => ref.read(timerProvider.notifier).setDuration(50),
-                      ),
-                      const SizedBox(width: AppSpacing.m),
-                      _DurationButton(
-                        minutes: 90,
-                        isSelected: timerData.targetDurationMinutes == 90,
-                        onTap: () => ref.read(timerProvider.notifier).setDuration(90),
-                      ),
-                    ],
+                if (timerData.state == TimerState.completed) ...[
+                  Icon(
+                    Icons.check_circle_outline,
+                    size: 48,
+                    color: theme.colorScheme.primary.withValues(alpha: 0.7),
+                  ),
+                  const SizedBox(height: AppSpacing.l),
+                  Text(
+                    'Session complete',
+                    style: AppTypography.headingSection.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    '${timerData.targetDurationMinutes} minutes',
+                    style: AppTypography.body.copyWith(
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.xxl),
-                  ElevatedButton(
-                    onPressed: () => ref.read(timerProvider.notifier).start(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.colorScheme.primary,
-                      foregroundColor: theme.colorScheme.onPrimary,
-                      padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+                  SizedBox(
+                    width: 160,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.primary,
+                        foregroundColor: theme.colorScheme.onPrimary,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: Text(
+                        'Done',
+                        style: AppTypography.body.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.onPrimary,
+                        ),
+                      ),
                     ),
-                    child: Text('Start Focus', style: AppTypography.body.copyWith(fontWeight: FontWeight.w600, color: theme.colorScheme.onPrimary)),
                   ),
-                ] else if (timerData.state == TimerState.running) ...[
-                  OutlinedButton(
-                    onPressed: () => ref.read(timerProvider.notifier).pause(),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+                ] else ...[
+                  Text(
+                    _formatTime(timerData.remainingSeconds),
+                    style: TextStyle(
+                      fontSize: 80,
+                      fontWeight: FontWeight.w200,
+                      letterSpacing: -3,
+                      color: theme.textTheme.bodyLarge?.color,
+                      fontFeatures: const [FontFeature.tabularFigures()],
                     ),
-                    child: Text('Pause', style: AppTypography.body),
                   ),
-                ] else if (timerData.state == TimerState.paused) ...[
-                  ElevatedButton(
-                    onPressed: () => ref.read(timerProvider.notifier).resume(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.colorScheme.primary,
-                      foregroundColor: theme.colorScheme.onPrimary,
-                      padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+                  
+                  const SizedBox(height: AppSpacing.xxxl),
+                  
+                  if (timerData.state == TimerState.idle) ...[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _DurationButton(
+                          minutes: 25,
+                          isSelected: timerData.targetDurationMinutes == 25,
+                          onTap: () => ref.read(timerProvider.notifier).setDuration(25),
+                        ),
+                        const SizedBox(width: AppSpacing.s),
+                        _DurationButton(
+                          minutes: 50,
+                          isSelected: timerData.targetDurationMinutes == 50,
+                          onTap: () => ref.read(timerProvider.notifier).setDuration(50),
+                        ),
+                        const SizedBox(width: AppSpacing.s),
+                        _DurationButton(
+                          minutes: 90,
+                          isSelected: timerData.targetDurationMinutes == 90,
+                          onTap: () => ref.read(timerProvider.notifier).setDuration(90),
+                        ),
+                      ],
                     ),
-                    child: Text('Resume', style: AppTypography.body.copyWith(fontWeight: FontWeight.w600, color: theme.colorScheme.onPrimary)),
-                  ),
+                    const SizedBox(height: AppSpacing.xxl),
+                    SizedBox(
+                      width: 180,
+                      child: ElevatedButton(
+                        onPressed: () => ref.read(timerProvider.notifier).start(),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primary,
+                          foregroundColor: theme.colorScheme.onPrimary,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                        ),
+                        child: Text(
+                          'Start',
+                          style: AppTypography.body.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ] else if (timerData.state == TimerState.running) ...[
+                    SizedBox(
+                      width: 180,
+                      child: OutlinedButton(
+                        onPressed: () => ref.read(timerProvider.notifier).pause(),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                          side: BorderSide(color: theme.dividerColor),
+                        ),
+                        child: Text(
+                          'Pause',
+                          style: AppTypography.body.copyWith(
+                            color: theme.textTheme.bodyMedium?.color,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ] else if (timerData.state == TimerState.paused) ...[
+                    SizedBox(
+                      width: 180,
+                      child: ElevatedButton(
+                        onPressed: () => ref.read(timerProvider.notifier).resume(),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primary,
+                          foregroundColor: theme.colorScheme.onPrimary,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                        ),
+                        child: Text(
+                          'Resume',
+                          style: AppTypography.body.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
+                
+                const Spacer(flex: 3),
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -225,23 +283,29 @@ class _DurationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? theme.colorScheme.primary.withValues(alpha: 0.1) : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+          color: isSelected
+              ? theme.colorScheme.primary.withValues(alpha: 0.08)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: isSelected ? theme.colorScheme.primary : theme.dividerColor,
+            color: isSelected
+                ? theme.colorScheme.primary.withValues(alpha: 0.3)
+                : theme.dividerColor.withValues(alpha: 0.5),
+            width: 0.5,
           ),
         ),
         child: Text(
           '$minutes m',
-          style: AppTypography.body.copyWith(
+          style: AppTypography.secondary.copyWith(
             color: isSelected ? theme.colorScheme.primary : theme.textTheme.bodyMedium?.color,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
       ),

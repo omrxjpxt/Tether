@@ -63,12 +63,11 @@ void main() {
     // Verify dark mode is persisted
     expect(prefs.getString('app_settings_v1'), contains('"themeMode":"dark"'));
 
-    // Scroll to bottom to verify DATA & BACKUP and ABOUT
-    await tester.scrollUntilVisible(find.text('ABOUT'), 100);
+    // Scroll to bottom to verify DATA & BACKUP and About section
+    await tester.scrollUntilVisible(find.text('Version 1.0.0'), 100);
     await tester.pumpAndSettle();
 
     expect(find.text('DATA & BACKUP'), findsOneWidget);
-    expect(find.text('ABOUT'), findsOneWidget);
     expect(find.text('Export backup'), findsOneWidget);
     expect(find.text('Import backup'), findsOneWidget);
   });

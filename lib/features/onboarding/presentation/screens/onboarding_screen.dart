@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tether/app/theme/app_colors.dart';
 import 'package:tether/app/theme/app_spacing.dart';
 import 'package:tether/app/theme/app_typography.dart';
 import 'package:tether/features/habits/domain/models/habit.dart';
@@ -41,16 +40,15 @@ class OnboardingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 540),
+            constraints: const BoxConstraints(maxWidth: 480),
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -58,44 +56,25 @@ class OnboardingScreen extends ConsumerWidget {
                     alignment: Alignment.topRight,
                     child: TextButton(
                       onPressed: () => _finishOnboarding(ref),
+                      style: TextButton.styleFrom(
+                        foregroundColor: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                      ),
                       child: Text(
                         'Skip',
-                        style: AppTypography.body.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
-                        ),
+                        style: AppTypography.secondary,
                       ),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.m),
 
-                  // Tether Minimal Icon Symbol
-                  Center(
-                    child: Container(
-                      width: 64,
-                      height: 64,
-                      decoration: BoxDecoration(
-                        color: isDark ? AppColors.darkSurfacePrimary : AppColors.lightSurfacePrimary,
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: theme.colorScheme.primary.withValues(alpha: 0.3),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.link_rounded,
-                        size: 34,
-                        color: theme.colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.l),
+                  const SizedBox(height: 48),
 
+                  // App name + tagline
                   Text(
                     'Tether',
-                    style: AppTypography.headingLarge,
+                    style: AppTypography.display,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: AppSpacing.xs),
+                  const SizedBox(height: 8),
                   Text(
                     'Build habits that stick.',
                     style: AppTypography.body.copyWith(
@@ -104,22 +83,24 @@ class OnboardingScreen extends ConsumerWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: AppSpacing.m),
+                  const SizedBox(height: AppSpacing.l),
                   Text(
-                    '"Connect a small action to something you already do."',
+                    '"Connect a small action to\nsomething you already do."',
                     style: AppTypography.body.copyWith(
                       fontStyle: FontStyle.italic,
-                      color: theme.textTheme.bodyMedium?.color,
-                      height: 1.4,
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                      height: 1.5,
                     ),
                     textAlign: TextAlign.center,
                   ),
 
-                  const SizedBox(height: AppSpacing.xxl),
+                  const SizedBox(height: 48),
 
                   Text(
                     'START WITH A TEMPLATE',
-                    style: AppTypography.metadata,
+                    style: AppTypography.metadata.copyWith(
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: AppSpacing.m),
@@ -134,7 +115,7 @@ class OnboardingScreen extends ConsumerWidget {
                       'write my top priority for the next hour',
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.s),
+                  const SizedBox(height: AppSpacing.xs),
                   _TemplateCard(
                     trigger: 'finish brushing my teeth',
                     action: 'prepare tomorrow\'s top priority',
@@ -145,7 +126,7 @@ class OnboardingScreen extends ConsumerWidget {
                       'prepare tomorrow\'s top priority',
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.s),
+                  const SizedBox(height: AppSpacing.xs),
                   _TemplateCard(
                     trigger: 'close my laptop',
                     action: 'stand and stretch for 60 seconds',
@@ -157,7 +138,7 @@ class OnboardingScreen extends ConsumerWidget {
                     ),
                   ),
 
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   AppButton(
                     label: 'Create custom habit',
@@ -171,7 +152,7 @@ class OnboardingScreen extends ConsumerWidget {
                       );
                     },
                   ),
-                  const SizedBox(height: AppSpacing.m),
+                  const SizedBox(height: AppSpacing.l),
                 ],
               ),
             ),
@@ -198,12 +179,15 @@ class _TemplateCard extends StatelessWidget {
     final theme = Theme.of(context);
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          border: Border.all(color: theme.dividerColor),
-          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: theme.dividerColor.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
@@ -213,14 +197,17 @@ class _TemplateCard extends StatelessWidget {
                 children: [
                   Text(
                     'After I $trigger',
-                    style: AppTypography.metadata.copyWith(
-                      color: theme.textTheme.bodyMedium?.color,
+                    style: AppTypography.caption.copyWith(
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
                   Text(
                     '→ I will $action',
-                    style: AppTypography.body.copyWith(fontWeight: FontWeight.w500),
+                    style: AppTypography.body.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                    ),
                   ),
                 ],
               ),
@@ -228,8 +215,8 @@ class _TemplateCard extends StatelessWidget {
             const SizedBox(width: 8),
             Icon(
               Icons.add_circle_outline,
-              size: 20,
-              color: theme.colorScheme.primary,
+              size: 18,
+              color: theme.colorScheme.primary.withValues(alpha: 0.6),
             ),
           ],
         ),

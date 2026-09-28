@@ -55,6 +55,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
     final dateKey = ref.watch(currentDateKeyProvider);
     final now = DateUtilsLocal.parseDateKey(dateKey);
     final dateStr = DateFormat('EEEE, MMMM d').format(now);
+    final theme = Theme.of(context);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -66,9 +67,11 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
             builder: (context) => const AddHabitSheet(),
           );
         },
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        child: const Icon(Icons.add),
+        elevation: 2,
+        backgroundColor: theme.colorScheme.primary,
+        foregroundColor: theme.colorScheme.onPrimary,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, size: 24),
       ),
       body: SafeArea(
         child: Center(
@@ -76,19 +79,21 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
             constraints: const BoxConstraints(maxWidth: 620),
             child: CustomScrollView(
               slivers: [
+                // Header
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+                    padding: const EdgeInsets.fromLTRB(24, 40, 24, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           dateStr,
-                          style: AppTypography.metadata.copyWith(
-                            color: Theme.of(context).textTheme.bodyMedium?.color,
+                          style: AppTypography.caption.copyWith(
+                            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+                            letterSpacing: 0.2,
                           ),
                         ),
-                        const SizedBox(height: AppSpacing.xs),
+                        const SizedBox(height: 6),
                         Text(
                           _getGreeting(),
                           style: AppTypography.headingLarge,
@@ -97,20 +102,24 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
                     ),
                   ),
                 ),
+
+                // Today's Focus
                 const SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    padding: EdgeInsets.fromLTRB(24, 28, 24, 0),
                     child: TodayFocusSection(),
                   ),
                 ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: AppSpacing.xxl),
-                ),
+
+                // Habit progress label + list
                 habitsAsync.when(
                   data: (habits) {
                     if (habits.isEmpty) {
                       return SliverToBoxAdapter(
-                        child: _buildEmptyState(context),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 32),
+                          child: _buildEmptyState(context),
+                        ),
                       );
                     }
                     
@@ -121,18 +130,18 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
                         (context, index) {
                           if (index == 0) {
                             return Padding(
-                              padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+                              padding: const EdgeInsets.fromLTRB(24, 32, 24, 14),
                               child: Text(
-                                '$completedCount of ${habits.length} done today',
-                                style: AppTypography.metadata.copyWith(
-                                  color: Theme.of(context).textTheme.bodyMedium?.color,
+                                '$completedCount of ${habits.length} complete',
+                                style: AppTypography.caption.copyWith(
+                                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                                 ),
                               ),
                             );
                           }
                           final habit = habits[index - 1];
                           return Padding(
-                            padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
+                            padding: const EdgeInsets.fromLTRB(24, 0, 24, 10),
                             child: HabitListItem(habit: habit, now: now),
                           );
                         },
@@ -141,7 +150,10 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
                     );
                   },
                   loading: () => const SliverToBoxAdapter(
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 64),
+                      child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                    ),
                   ),
                   error: (err, stack) => SliverToBoxAdapter(
                     child: Center(child: Text('Error: $err')),
@@ -159,22 +171,26 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
   }
 
   Widget _buildEmptyState(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 32),
+          const SizedBox(height: 16),
           Text(
-            'No habits yet.',
-            style: AppTypography.headingSection,
+            'No habits yet',
+            style: AppTypography.headingSection.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: AppSpacing.s),
+          const SizedBox(height: AppSpacing.xs),
           Text(
-            'Connect a small action to something you already do.',
+            'Connect a small action to something\nyou already do.',
             style: AppTypography.body.copyWith(
-              color: Theme.of(context).textTheme.bodyMedium?.color,
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+              height: 1.5,
             ),
             textAlign: TextAlign.center,
           ),
@@ -191,10 +207,16 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
             },
           ),
           const SizedBox(height: AppSpacing.xxl),
-          Text('SUGGESTED', style: AppTypography.metadata, textAlign: TextAlign.center),
+          Text(
+            'OR TRY A SUGGESTION',
+            style: AppTypography.metadata.copyWith(
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+            ),
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: AppSpacing.m),
           _buildSuggestion(context, 'sit at my desk', 'write my top 1 priority for the next hour'),
-          const SizedBox(height: AppSpacing.s),
+          const SizedBox(height: AppSpacing.xs),
           _buildSuggestion(context, 'close my laptop for a break', 'stand and stretch for 60 seconds'),
         ],
       ),
@@ -216,17 +238,28 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          border: Border.all(color: theme.dividerColor),
+          border: Border.all(
+            color: theme.dividerColor.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('After I $trigger', style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
-            const SizedBox(height: 4),
-            Text('→ I will $action', style: const TextStyle(fontWeight: FontWeight.w500)),
+            Text(
+              'After I $trigger',
+              style: AppTypography.caption.copyWith(
+                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+              ),
+            ),
+            const SizedBox(height: 3),
+            Text(
+              '→ I will $action',
+              style: AppTypography.body.copyWith(fontWeight: FontWeight.w500),
+            ),
           ],
         ),
       ),

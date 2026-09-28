@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tether/app/theme/app_spacing.dart';
 import 'package:tether/app/theme/app_typography.dart';
 import 'package:tether/core/services/notification_providers.dart';
 import 'package:tether/core/utils/date_utils.dart';
@@ -78,24 +77,26 @@ class HabitListItem extends ConsumerWidget {
           },
           behavior: HitTestBehavior.opaque,
           child: Container(
-            width: 44,
-            height: 44,
+            width: 40,
+            height: 40,
             alignment: Alignment.center,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeInOut,
-              width: 28,
-              height: 28,
+              width: 24,
+              height: 24,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isCompletedToday ? theme.colorScheme.primary : Colors.transparent,
                 border: Border.all(
-                  color: isCompletedToday ? theme.colorScheme.primary : theme.dividerColor,
-                  width: 2,
+                  color: isCompletedToday
+                      ? theme.colorScheme.primary
+                      : theme.dividerColor.withValues(alpha: 0.8),
+                  width: 1.5,
                 ),
               ),
               child: isCompletedToday 
-                  ? Icon(Icons.check, size: 18, color: theme.colorScheme.onPrimary)
+                  ? Icon(Icons.check, size: 14, color: theme.colorScheme.onPrimary)
                   : null,
             ),
           ),
@@ -108,11 +109,15 @@ class HabitListItem extends ConsumerWidget {
             text: TextSpan(
               style: AppTypography.body.copyWith(
                 color: theme.textTheme.bodyLarge?.color,
+                fontSize: 15,
+                height: 1.4,
               ),
               children: [
                 TextSpan(
                   text: 'After I ${habit.trigger}, ',
-                  style: TextStyle(color: theme.textTheme.bodyMedium?.color),
+                  style: TextStyle(
+                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+                  ),
                 ),
                 TextSpan(
                   text: 'I will ${habit.action}.',
@@ -121,36 +126,44 @@ class HabitListItem extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: AppSpacing.s),
+          const SizedBox(height: 10),
           Semantics(
             label: '7-day history: ${last7Days.where((c) => c).length} of 7 days completed',
             child: Row(
-              children: last7Days.map((isCompleted) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 6.0),
-                  child: Container(
-                    width: 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isCompleted ? theme.colorScheme.primary : Colors.transparent,
-                      border: Border.all(
-                        color: isCompleted ? theme.colorScheme.primary : theme.dividerColor,
-                        width: 1,
+              children: [
+                ...last7Days.map((isCompleted) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: Container(
+                      width: 7,
+                      height: 7,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isCompleted
+                            ? theme.colorScheme.primary.withValues(alpha: 0.8)
+                            : Colors.transparent,
+                        border: Border.all(
+                          color: isCompleted
+                              ? theme.colorScheme.primary.withValues(alpha: 0.8)
+                              : theme.dividerColor.withValues(alpha: 0.5),
+                          width: 1,
+                        ),
                       ),
                     ),
+                  );
+                }),
+                const SizedBox(width: 8),
+                Text(
+                  streakText,
+                  style: AppTypography.caption.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                    fontSize: 12,
                   ),
-                );
-              }).toList(),
+                ),
+              ],
             ),
           ),
         ],
-      ),
-      trailing: Text(
-        streakText,
-        style: AppTypography.metadata.copyWith(
-          color: theme.textTheme.bodyMedium?.color,
-        ),
       ),
     );
   }

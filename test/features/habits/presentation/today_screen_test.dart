@@ -24,7 +24,7 @@ void main() {
     await tester.pump();
     await tester.pumpAndSettle();
 
-    expect(find.text('No habits yet.'), findsOneWidget);
+    expect(find.text('No habits yet'), findsOneWidget);
     expect(find.text('Create habit'), findsWidgets);
   });
 }

@@ -137,6 +137,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(ctx).colorScheme.primary,
                 foregroundColor: Theme.of(ctx).colorScheme.onPrimary,
+                elevation: 0,
               ),
               child: const Text('Replace Data'),
             ),
@@ -191,18 +192,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 620),
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(24, 32, 24, 40),
+            padding: const EdgeInsets.fromLTRB(24, 40, 24, 40),
             children: [
               Text('Settings', style: AppTypography.headingLarge),
-              const SizedBox(height: AppSpacing.xxl),
+              const SizedBox(height: 36),
 
               // APPEARANCE SECTION
-              Text('APPEARANCE', style: AppTypography.metadata),
+              _SectionLabel('APPEARANCE'),
               const SizedBox(height: AppSpacing.s),
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: theme.dividerColor),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: theme.dividerColor.withValues(alpha: 0.7),
+                    width: 0.5,
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -215,20 +219,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ref.read(appSettingsProvider.notifier).updateThemeMode('system');
                       },
                     ),
-                    Divider(height: 1, color: theme.dividerColor),
+                    Divider(height: 0.5, thickness: 0.5, color: theme.dividerColor.withValues(alpha: 0.5)),
                     _ThemeOptionTile(
                       label: 'Light',
-                      subtitle: 'Warm and minimal paper look',
+                      subtitle: 'Warm and minimal',
                       isSelected: settings.themeMode == 'light',
                       onTap: () {
                         HapticFeedback.selectionClick();
                         ref.read(appSettingsProvider.notifier).updateThemeMode('light');
                       },
                     ),
-                    Divider(height: 1, color: theme.dividerColor),
+                    Divider(height: 0.5, thickness: 0.5, color: theme.dividerColor.withValues(alpha: 0.5)),
                     _ThemeOptionTile(
                       label: 'Dark',
-                      subtitle: 'Calm and focused dark theme',
+                      subtitle: 'Calm and focused',
                       isSelected: settings.themeMode == 'dark',
                       onTap: () {
                         HapticFeedback.selectionClick();
@@ -239,17 +243,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.xxl),
+              const SizedBox(height: 32),
 
               // NOTIFICATIONS SECTION
-              Text('NOTIFICATIONS', style: AppTypography.metadata),
+              _SectionLabel('NOTIFICATIONS'),
               const SizedBox(height: AppSpacing.s),
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: theme.dividerColor),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: theme.dividerColor.withValues(alpha: 0.7),
+                    width: 0.5,
+                  ),
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 child: Row(
                   children: [
                     Icon(
@@ -258,21 +265,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           : Icons.notifications_off_outlined,
                       color: _notificationsPermissionGranted
                           ? theme.colorScheme.primary
-                          : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+                          : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                      size: 20,
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Habit Reminders', style: AppTypography.body.copyWith(fontWeight: FontWeight.w500)),
+                          Text(
+                            'Habit Reminders',
+                            style: AppTypography.body.copyWith(fontWeight: FontWeight.w500),
+                          ),
                           const SizedBox(height: 2),
                           Text(
                             _notificationsPermissionGranted
-                                ? 'Scheduled according to your habits'
+                                ? 'Scheduled per habit'
                                 : 'Disabled in system settings',
-                            style: AppTypography.metadata.copyWith(
-                              color: theme.textTheme.bodyMedium?.color,
+                            style: AppTypography.caption.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                              fontSize: 12,
                             ),
                           ),
                         ],
@@ -300,96 +312,94 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.xxl),
+              const SizedBox(height: 32),
 
               // DATA & BACKUP SECTION
-              Text('DATA & BACKUP', style: AppTypography.metadata),
+              _SectionLabel('DATA & BACKUP'),
               const SizedBox(height: AppSpacing.s),
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: theme.dividerColor),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: theme.dividerColor.withValues(alpha: 0.7),
+                    width: 0.5,
+                  ),
                 ),
                 child: Column(
                   children: [
-                    ListTile(
-                      leading: const Icon(Icons.upload_file_outlined),
-                      title: Text('Export backup', style: AppTypography.body),
-                      subtitle: Text(
-                        'Save your habits, focus sessions, and reviews to JSON',
-                        style: AppTypography.metadata.copyWith(
-                          color: theme.textTheme.bodyMedium?.color,
-                        ),
-                      ),
+                    _SettingsRow(
+                      icon: Icons.upload_file_outlined,
+                      title: 'Export backup',
+                      subtitle: 'Save habits, sessions, and reviews',
                       trailing: _isExporting
                           ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(strokeWidth: 1.5),
                             )
-                          : const Icon(Icons.arrow_forward_ios, size: 14),
+                          : Icon(
+                              Icons.chevron_right,
+                              size: 18,
+                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.3),
+                            ),
                       onTap: _isExporting ? null : _exportBackup,
                     ),
-                    Divider(height: 1, color: theme.dividerColor),
-                    ListTile(
-                      leading: const Icon(Icons.download_outlined),
-                      title: Text('Import backup', style: AppTypography.body),
-                      subtitle: Text(
-                        'Restore your Tether data from a JSON backup file',
-                        style: AppTypography.metadata.copyWith(
-                          color: theme.textTheme.bodyMedium?.color,
-                        ),
-                      ),
+                    Divider(height: 0.5, thickness: 0.5, color: theme.dividerColor.withValues(alpha: 0.5)),
+                    _SettingsRow(
+                      icon: Icons.download_outlined,
+                      title: 'Import backup',
+                      subtitle: 'Restore from a JSON file',
                       trailing: _isImporting
                           ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(strokeWidth: 1.5),
                             )
-                          : const Icon(Icons.arrow_forward_ios, size: 14),
+                          : Icon(
+                              Icons.chevron_right,
+                              size: 18,
+                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.3),
+                            ),
                       onTap: _isImporting ? null : _importBackup,
                     ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.xxl),
+              const SizedBox(height: 48),
 
-              // ABOUT SECTION
-              Text('ABOUT', style: AppTypography.metadata),
-              const SizedBox(height: AppSpacing.s),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: theme.dividerColor),
-                ),
+              // ABOUT — minimal, bottom of page
+              Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Tether', style: AppTypography.headingSection),
-                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'Tether',
+                      style: AppTypography.body.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
                     Text(
                       'Build habits that stick.',
-                      style: AppTypography.body.copyWith(
+                      style: AppTypography.caption.copyWith(
                         color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.m),
                     Text(
-                      'A calm, offline-first personal habit and focus application built around habit stacking. All data stays securely on your device.',
-                      style: AppTypography.body.copyWith(
-                        color: theme.textTheme.bodyMedium?.color,
-                        height: 1.4,
+                      'Calm, offline-first habit tracking.\nAll data stays on your device.',
+                      style: AppTypography.caption.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                        height: 1.5,
                       ),
+                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: AppSpacing.m),
+                    const SizedBox(height: AppSpacing.s),
                     Text(
-                      'Version 1.0.0 (Build 1)',
+                      'Version 1.0.0',
                       style: AppTypography.metadata.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.25),
+                        fontSize: 11,
                       ),
                     ),
                   ],
@@ -398,6 +408,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  final String text;
+  const _SectionLabel(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: AppTypography.metadata.copyWith(
+        color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
       ),
     );
   }
@@ -421,7 +446,7 @@ class _ThemeOptionTile extends StatelessWidget {
     final theme = Theme.of(context);
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(14),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
@@ -430,19 +455,74 @@ class _ThemeOptionTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: AppTypography.body.copyWith(fontWeight: FontWeight.w500)),
+                  Text(
+                    label,
+                    style: AppTypography.body.copyWith(fontWeight: FontWeight.w500),
+                  ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: AppTypography.metadata.copyWith(
-                      color: theme.textTheme.bodyMedium?.color,
+                    style: AppTypography.caption.copyWith(
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                      fontSize: 12,
                     ),
                   ),
                 ],
               ),
             ),
             if (isSelected)
-              Icon(Icons.check, color: theme.colorScheme.primary, size: 20),
+              Icon(Icons.check, color: theme.colorScheme.primary, size: 18),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingsRow extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+
+  const _SettingsRow({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    this.trailing,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Icon(icon, size: 20, color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5)),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: AppTypography.body),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: AppTypography.caption.copyWith(
+                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ?trailing,
           ],
         ),
       ),

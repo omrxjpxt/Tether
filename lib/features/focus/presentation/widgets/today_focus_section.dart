@@ -50,7 +50,7 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
         Text(
           'TODAY\'S FOCUS',
           style: AppTypography.metadata.copyWith(
-            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
           ),
         ),
         const SizedBox(height: AppSpacing.s),
@@ -59,8 +59,11 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
             if (focus == null || _isEditing) {
               return Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: theme.dividerColor),
-                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: theme.dividerColor.withValues(alpha: 0.7),
+                    width: 0.5,
+                  ),
+                  borderRadius: BorderRadius.circular(14),
                   color: theme.colorScheme.surface,
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -74,12 +77,18 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                         decoration: const InputDecoration(
                           hintText: 'What matters most today?',
                           border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
                         ),
                         style: AppTypography.body,
                       ),
                     ),
                     TextButton(
                       onPressed: () => _save(ref),
+                      style: TextButton.styleFrom(
+                        foregroundColor: theme.colorScheme.primary,
+                        textStyle: AppTypography.body.copyWith(fontWeight: FontWeight.w600),
+                      ),
                       child: const Text('Set'),
                     ),
                   ],
@@ -97,49 +106,81 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
 
             return Container(
               decoration: BoxDecoration(
-                border: Border.all(color: theme.dividerColor),
-                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: theme.dividerColor.withValues(alpha: 0.7),
+                  width: 0.5,
+                ),
+                borderRadius: BorderRadius.circular(14),
                 color: theme.colorScheme.surface,
               ),
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
               child: Column(
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-                          ref.read(dailyFocusProvider.notifier).toggleCompleted();
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          width: 28,
-                          height: 28,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: focus.completed ? theme.colorScheme.primary : Colors.transparent,
-                            border: Border.all(
-                              color: focus.completed ? theme.colorScheme.primary : theme.dividerColor,
-                              width: 2,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: GestureDetector(
+                          onTap: () {
+                            HapticFeedback.lightImpact();
+                            ref.read(dailyFocusProvider.notifier).toggleCompleted();
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: focus.completed ? theme.colorScheme.primary : Colors.transparent,
+                              border: Border.all(
+                                color: focus.completed
+                                    ? theme.colorScheme.primary
+                                    : theme.dividerColor.withValues(alpha: 0.8),
+                                width: 1.5,
+                              ),
                             ),
+                            child: focus.completed 
+                                ? Icon(Icons.check, size: 14, color: theme.colorScheme.onPrimary)
+                                : null,
                           ),
-                          child: focus.completed 
-                              ? Icon(Icons.check, size: 18, color: theme.colorScheme.onPrimary)
-                              : null,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 14),
                       Expanded(
-                        child: Text(
-                          focus.priorityText,
-                          style: AppTypography.body.copyWith(
-                            decoration: focus.completed ? TextDecoration.lineThrough : null,
-                            color: focus.completed ? theme.textTheme.bodyMedium?.color : null,
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              focus.priorityText,
+                              style: AppTypography.body.copyWith(
+                                fontWeight: FontWeight.w500,
+                                decoration: focus.completed ? TextDecoration.lineThrough : null,
+                                color: focus.completed
+                                    ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4)
+                                    : null,
+                              ),
+                            ),
+                            if (todaySessions > 0) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                '$todaySessions session${todaySessions == 1 ? '' : 's'} · $todayDuration min',
+                                style: AppTypography.caption.copyWith(
+                                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                       ),
                       PopupMenuButton<String>(
-                        icon: const Icon(Icons.more_vert),
+                        icon: Icon(
+                          Icons.more_horiz,
+                          size: 20,
+                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                        ),
+                        padding: EdgeInsets.zero,
                         onSelected: (val) {
                           if (val == 'edit') {
                             _controller.text = focus.priorityText;
@@ -157,22 +198,10 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                       ),
                     ],
                   ),
-                  if (todaySessions > 0) ...[
-                    const SizedBox(height: AppSpacing.s),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '$todaySessions session${todaySessions == 1 ? '' : 's'} · $todayDuration min',
-                        style: AppTypography.metadata.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
-                        ),
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: AppSpacing.l),
+                  const SizedBox(height: AppSpacing.m),
                   SizedBox(
                     width: double.infinity,
-                    child: OutlinedButton(
+                    child: TextButton(
                       onPressed: () {
                         HapticFeedback.lightImpact();
                         if (ref.read(timerProvider).state == TimerState.completed) {
@@ -185,18 +214,33 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                           builder: (context) => const FocusTimerScreen(),
                         );
                       },
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      style: TextButton.styleFrom(
+                        foregroundColor: theme.colorScheme.primary,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide(
+                            color: theme.colorScheme.primary.withValues(alpha: 0.25),
+                          ),
+                        ),
                       ),
-                      child: Text('Start Focus', style: AppTypography.body.copyWith(fontWeight: FontWeight.w500)),
+                      child: Text(
+                        'Start Focus',
+                        style: AppTypography.secondary.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const SizedBox(
+            height: 48,
+            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+          ),
           error: (err, stack) => const Text('Error loading focus'),
         ),
       ],
