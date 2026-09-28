@@ -20,6 +20,7 @@ class HabitListItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     final isCompletedToday = HabitService.isHabitCompletedToday(habit, now);
     
     // Calculate streak
@@ -87,16 +88,14 @@ class HabitListItem extends ConsumerWidget {
               height: 24,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isCompletedToday ? theme.colorScheme.primary : Colors.transparent,
+                color: isCompletedToday ? colors.primary : Colors.transparent,
                 border: Border.all(
-                  color: isCompletedToday
-                      ? theme.colorScheme.primary
-                      : theme.dividerColor.withValues(alpha: 0.8),
+                  color: isCompletedToday ? colors.primary : theme.dividerColor,
                   width: 1.5,
                 ),
               ),
               child: isCompletedToday 
-                  ? Icon(Icons.check, size: 14, color: theme.colorScheme.onPrimary)
+                  ? Icon(Icons.check, size: 14, color: colors.onPrimary)
                   : null,
             ),
           ),
@@ -108,16 +107,14 @@ class HabitListItem extends ConsumerWidget {
           RichText(
             text: TextSpan(
               style: AppTypography.body.copyWith(
-                color: theme.textTheme.bodyLarge?.color,
+                color: colors.onSurface,
                 fontSize: 15,
                 height: 1.4,
               ),
               children: [
                 TextSpan(
                   text: 'After I ${habit.trigger}, ',
-                  style: TextStyle(
-                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
-                  ),
+                  style: TextStyle(color: colors.onSurfaceVariant),
                 ),
                 TextSpan(
                   text: 'I will ${habit.action}.',
@@ -139,13 +136,9 @@ class HabitListItem extends ConsumerWidget {
                       height: 7,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isCompleted
-                            ? theme.colorScheme.primary.withValues(alpha: 0.8)
-                            : Colors.transparent,
+                        color: isCompleted ? colors.primary : Colors.transparent,
                         border: Border.all(
-                          color: isCompleted
-                              ? theme.colorScheme.primary.withValues(alpha: 0.8)
-                              : theme.dividerColor.withValues(alpha: 0.5),
+                          color: isCompleted ? colors.primary : theme.dividerColor,
                           width: 1,
                         ),
                       ),
@@ -156,7 +149,7 @@ class HabitListItem extends ConsumerWidget {
                 Text(
                   streakText,
                   style: AppTypography.caption.copyWith(
-                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                    color: colors.outline,
                     fontSize: 12,
                   ),
                 ),

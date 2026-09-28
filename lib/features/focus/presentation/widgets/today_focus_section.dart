@@ -41,6 +41,7 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
     final focusAsync = ref.watch(dailyFocusProvider);
     final sessionsAsync = ref.watch(focusSessionsProvider);
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     final dateKey = ref.watch(currentDateKeyProvider);
     final now = DateUtilsLocal.parseDateKey(dateKey);
 
@@ -50,7 +51,7 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
         Text(
           'TODAY\'S FOCUS',
           style: AppTypography.metadata.copyWith(
-            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+            color: colors.outline,
           ),
         ),
         const SizedBox(height: AppSpacing.s),
@@ -59,12 +60,9 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
             if (focus == null || _isEditing) {
               return Container(
                 decoration: BoxDecoration(
-                  border: Border.all(
-                    color: theme.dividerColor.withValues(alpha: 0.7),
-                    width: 0.5,
-                  ),
+                  border: Border.all(color: theme.dividerColor),
                   borderRadius: BorderRadius.circular(14),
-                  color: theme.colorScheme.surface,
+                  color: colors.surface,
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Row(
@@ -86,7 +84,7 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                     TextButton(
                       onPressed: () => _save(ref),
                       style: TextButton.styleFrom(
-                        foregroundColor: theme.colorScheme.primary,
+                        foregroundColor: colors.primary,
                         textStyle: AppTypography.body.copyWith(fontWeight: FontWeight.w600),
                       ),
                       child: const Text('Set'),
@@ -106,12 +104,9 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
 
             return Container(
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: theme.dividerColor.withValues(alpha: 0.7),
-                  width: 0.5,
-                ),
+                border: Border.all(color: theme.dividerColor),
                 borderRadius: BorderRadius.circular(14),
-                color: theme.colorScheme.surface,
+                color: colors.surface,
               ),
               padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
               child: Column(
@@ -132,16 +127,14 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                             height: 24,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: focus.completed ? theme.colorScheme.primary : Colors.transparent,
+                              color: focus.completed ? colors.primary : Colors.transparent,
                               border: Border.all(
-                                color: focus.completed
-                                    ? theme.colorScheme.primary
-                                    : theme.dividerColor.withValues(alpha: 0.8),
+                                color: focus.completed ? colors.primary : theme.dividerColor,
                                 width: 1.5,
                               ),
                             ),
                             child: focus.completed 
-                                ? Icon(Icons.check, size: 14, color: theme.colorScheme.onPrimary)
+                                ? Icon(Icons.check, size: 14, color: colors.onPrimary)
                                 : null,
                           ),
                         ),
@@ -156,9 +149,7 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                               style: AppTypography.body.copyWith(
                                 fontWeight: FontWeight.w500,
                                 decoration: focus.completed ? TextDecoration.lineThrough : null,
-                                color: focus.completed
-                                    ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4)
-                                    : null,
+                                color: focus.completed ? colors.onSurfaceVariant : null,
                               ),
                             ),
                             if (todaySessions > 0) ...[
@@ -166,7 +157,7 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                               Text(
                                 '$todaySessions session${todaySessions == 1 ? '' : 's'} · $todayDuration min',
                                 style: AppTypography.caption.copyWith(
-                                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                                  color: colors.outline,
                                   fontSize: 12,
                                 ),
                               ),
@@ -178,7 +169,7 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                         icon: Icon(
                           Icons.more_horiz,
                           size: 20,
-                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                          color: colors.outline,
                         ),
                         padding: EdgeInsets.zero,
                         onSelected: (val) {
@@ -215,12 +206,12 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                         );
                       },
                       style: TextButton.styleFrom(
-                        foregroundColor: theme.colorScheme.primary,
+                        foregroundColor: colors.primary,
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                           side: BorderSide(
-                            color: theme.colorScheme.primary.withValues(alpha: 0.25),
+                            color: colors.primary.withValues(alpha: 0.25),
                           ),
                         ),
                       ),
@@ -228,7 +219,7 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                         'Start Focus',
                         style: AppTypography.secondary.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: theme.colorScheme.primary,
+                          color: colors.primary,
                         ),
                       ),
                     ),

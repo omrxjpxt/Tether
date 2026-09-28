@@ -135,6 +135,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
   Widget build(BuildContext context) {
     final isEditing = widget.existingHabit != null;
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     
     return Container(
@@ -155,7 +156,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: theme.dividerColor.withValues(alpha: 0.6),
+                  color: theme.dividerColor,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -195,7 +196,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                     },
                     icon: Icon(
                       Icons.delete_outline,
-                      color: theme.colorScheme.error.withValues(alpha: 0.7),
+                      color: colors.error,
                       size: 20,
                     ),
                   ),
@@ -206,7 +207,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
             Text(
               'AFTER I',
               style: AppTypography.metadata.copyWith(
-                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                color: colors.outline,
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -223,7 +224,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
             Text(
               'I WILL',
               style: AppTypography.metadata.copyWith(
-                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                color: colors.outline,
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -241,7 +242,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
             Text(
               'FREQUENCY',
               style: AppTypography.metadata.copyWith(
-                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                color: colors.outline,
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -267,9 +268,9 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                     width: 180,
                     child: SliderTheme(
                       data: SliderThemeData(
-                        activeTrackColor: theme.colorScheme.primary,
+                        activeTrackColor: colors.primary,
                         inactiveTrackColor: theme.dividerColor,
-                        thumbColor: theme.colorScheme.primary,
+                        thumbColor: colors.primary,
                         trackHeight: 2,
                         thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
                         overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
@@ -293,7 +294,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
             Text(
               'REMINDER',
               style: AppTypography.metadata.copyWith(
-                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                color: colors.outline,
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -306,12 +307,12 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: _reminderTime != null
-                        ? theme.colorScheme.primary.withValues(alpha: 0.3)
-                        : theme.dividerColor.withValues(alpha: 0.7),
+                        ? colors.primary.withValues(alpha: 0.3)
+                        : theme.dividerColor,
                     width: 0.5,
                   ),
                   color: _reminderTime != null
-                      ? theme.colorScheme.primary.withValues(alpha: 0.04)
+                      ? colors.primary.withValues(alpha: 0.04)
                       : Colors.transparent,
                 ),
                 child: Row(
@@ -319,8 +320,8 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                     Icon(
                       _reminderTime != null ? Icons.notifications_active_outlined : Icons.notifications_none_outlined,
                       color: _reminderTime != null
-                          ? theme.colorScheme.primary
-                          : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                          ? colors.primary
+                          : colors.onSurfaceVariant,
                       size: 20,
                     ),
                     const SizedBox(width: 12),
@@ -346,7 +347,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                                       ? 'Monday to Friday'
                                       : 'Every day'),
                               style: AppTypography.caption.copyWith(
-                                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                                color: colors.outline,
                                 fontSize: 12,
                               ),
                             ),
@@ -363,14 +364,14 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                         child: Icon(
                           Icons.close,
                           size: 16,
-                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                          color: colors.onSurfaceVariant,
                         ),
                       )
                     else
                       Icon(
                         Icons.chevron_right,
                         size: 18,
-                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.3),
+                        color: colors.outline,
                       ),
                   ],
                 ),
@@ -394,6 +395,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
   Widget _buildChip(String label, FrequencyType type) {
     final isSelected = _frequencyType == type;
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return FilterChip(
       selected: isSelected,
       label: Text(label),
@@ -401,14 +403,14 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
         HapticFeedback.selectionClick();
         setState(() => _frequencyType = type);
       },
-      selectedColor: theme.colorScheme.primary.withValues(alpha: 0.08),
-      checkmarkColor: theme.colorScheme.primary,
+      selectedColor: colors.primary.withValues(alpha: 0.08),
+      checkmarkColor: colors.primary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(999),
         side: BorderSide(
           color: isSelected
-              ? theme.colorScheme.primary.withValues(alpha: 0.3)
-              : theme.dividerColor.withValues(alpha: 0.5),
+              ? colors.primary.withValues(alpha: 0.3)
+              : theme.dividerColor,
           width: 0.5,
         ),
       ),

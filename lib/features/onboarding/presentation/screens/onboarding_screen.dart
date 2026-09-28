@@ -40,6 +40,7 @@ class OnboardingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -57,7 +58,7 @@ class OnboardingScreen extends ConsumerWidget {
                     child: TextButton(
                       onPressed: () => _finishOnboarding(ref),
                       style: TextButton.styleFrom(
-                        foregroundColor: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                        foregroundColor: colors.onSurfaceVariant,
                       ),
                       child: Text(
                         'Skip',
@@ -78,7 +79,7 @@ class OnboardingScreen extends ConsumerWidget {
                   Text(
                     'Build habits that stick.',
                     style: AppTypography.body.copyWith(
-                      color: theme.colorScheme.primary,
+                      color: colors.primary,
                       fontWeight: FontWeight.w500,
                     ),
                     textAlign: TextAlign.center,
@@ -88,7 +89,7 @@ class OnboardingScreen extends ConsumerWidget {
                     '"Connect a small action to\nsomething you already do."',
                     style: AppTypography.body.copyWith(
                       fontStyle: FontStyle.italic,
-                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                      color: colors.onSurfaceVariant,
                       height: 1.5,
                     ),
                     textAlign: TextAlign.center,
@@ -99,7 +100,7 @@ class OnboardingScreen extends ConsumerWidget {
                   Text(
                     'START WITH A TEMPLATE',
                     style: AppTypography.metadata.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                      color: colors.outline,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -177,16 +178,15 @@ class _TemplateCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          border: Border.all(
-            color: theme.dividerColor.withValues(alpha: 0.5),
-            width: 0.5,
-          ),
+          color: colors.surface,
+          border: Border.all(color: theme.dividerColor),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -198,7 +198,7 @@ class _TemplateCard extends StatelessWidget {
                   Text(
                     'After I $trigger',
                     style: AppTypography.caption.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                      color: colors.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 3),
@@ -216,7 +216,7 @@ class _TemplateCard extends StatelessWidget {
             Icon(
               Icons.add_circle_outline,
               size: 18,
-              color: theme.colorScheme.primary.withValues(alpha: 0.6),
+              color: colors.primary.withValues(alpha: 0.6), // The only acceptable opacity use here
             ),
           ],
         ),

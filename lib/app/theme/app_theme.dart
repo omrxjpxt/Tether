@@ -19,8 +19,10 @@ class AppTheme {
         onPrimary: AppColors.lightSurfacePrimary,
         onSecondary: AppColors.lightTextPrimary,
         onSurface: AppColors.lightTextPrimary,
+        onSurfaceVariant: AppColors.lightTextSecondary,
         onError: AppColors.lightSurfacePrimary,
-        outline: AppColors.lightBorder,
+        outline: AppColors.lightTextTertiary,
+        outlineVariant: AppColors.lightBorder,
       ),
       textTheme: const TextTheme(
         displayLarge: AppTypography.display,
@@ -146,8 +148,10 @@ class AppTheme {
         onPrimary: AppColors.darkSurfacePrimary,
         onSecondary: AppColors.darkTextPrimary,
         onSurface: AppColors.darkTextPrimary,
+        onSurfaceVariant: AppColors.darkTextSecondary,
         onError: AppColors.darkSurfacePrimary,
-        outline: AppColors.darkBorder,
+        outline: AppColors.darkTextTertiary,
+        outlineVariant: AppColors.darkBorder,
       ),
       textTheme: const TextTheme(
         displayLarge: AppTypography.display,

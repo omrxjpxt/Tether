@@ -27,7 +27,7 @@ class HabitRowShell extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             border: Border.all(
-              color: theme.dividerColor.withValues(alpha: 0.7),
+              color: theme.dividerColor,
               width: 0.5,
             ),
             borderRadius: BorderRadius.circular(14),

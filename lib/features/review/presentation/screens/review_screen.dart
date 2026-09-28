@@ -49,6 +49,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     final weekStart = ref.watch(reviewWeekProvider);
     final weekEnd = DateUtilsLocal.endOfWeek(weekStart);
     
@@ -86,7 +87,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                       Text(
                         dateRange,
                         style: AppTypography.caption.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                          color: colors.onSurfaceVariant,
                           letterSpacing: 0.2,
                         ),
                       ),
@@ -106,7 +107,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                             Text(
                               'Your first week is still ahead.',
                               style: AppTypography.body.copyWith(
-                                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                                color: colors.onSurfaceVariant,
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -114,7 +115,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                             Text(
                               'Create habits from the Today tab to see your review here.',
                               style: AppTypography.caption.copyWith(
-                                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.35),
+                                color: colors.outline,
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -163,7 +164,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                                     Text(
                                       'COMPLETED',
                                       style: AppTypography.metadata.copyWith(
-                                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                                        color: colors.outline,
                                       ),
                                     ),
                                     const SizedBox(height: 6),
@@ -183,7 +184,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                                   Text(
                                     'RATE',
                                     style: AppTypography.metadata.copyWith(
-                                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                                      color: colors.outline,
                                     ),
                                   ),
                                   const SizedBox(height: 6),
@@ -205,7 +206,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                           Text(
                             'CONSISTENCY',
                             style: AppTypography.metadata.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                              color: colors.outline,
                             ),
                           ),
                           const SizedBox(height: AppSpacing.m),
@@ -218,7 +219,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                                     Text(
                                       ['M', 'T', 'W', 'T', 'F', 'S', 'S'][i],
                                       style: AppTypography.metadata.copyWith(
-                                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.35),
+                                        color: colors.outline,
                                         fontSize: 11,
                                       ),
                                     ),
@@ -229,13 +230,12 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: weekConsistency[i]
-                                            ? theme.colorScheme.primary.withValues(alpha: 0.85)
+                                            ? colors.primary
                                             : Colors.transparent,
                                         border: Border.all(
                                           color: weekConsistency[i]
-                                              ? theme.colorScheme.primary.withValues(alpha: 0.85)
-                                              : theme.dividerColor.withValues(alpha: 0.5),
-                                          width: weekConsistency[i] ? 1 : 0.5,
+                                              ? colors.primary
+                                              : theme.dividerColor,
                                         ),
                                       ),
                                     ),
@@ -250,7 +250,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                           Text(
                             'HABITS',
                             style: AppTypography.metadata.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                              color: colors.outline,
                             ),
                           ),
                           const SizedBox(height: AppSpacing.m),
@@ -285,7 +285,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                                       Text(
                                         '$pct%',
                                         style: AppTypography.caption.copyWith(
-                                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                                          color: colors.outline,
                                           fontSize: 12,
                                         ),
                                       ),
@@ -324,14 +324,14 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                             Text(
                               'FOCUS',
                               style: AppTypography.metadata.copyWith(
-                                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                                color: colors.outline,
                               ),
                             ),
                             const SizedBox(height: AppSpacing.s),
                             Text(
                               'No focus sessions this week.',
                               style: AppTypography.body.copyWith(
-                                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                                color: colors.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -354,7 +354,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                           Text(
                             'FOCUS',
                             style: AppTypography.metadata.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                              color: colors.outline,
                             ),
                           ),
                           const SizedBox(height: AppSpacing.m),
@@ -367,7 +367,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                                     Text(
                                       'SESSIONS',
                                       style: AppTypography.metadata.copyWith(
-                                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                                        color: colors.outline,
                                         fontSize: 11,
                                       ),
                                     ),
@@ -388,7 +388,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                                   Text(
                                     'TIME',
                                     style: AppTypography.metadata.copyWith(
-                                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                                      color: colors.outline,
                                       fontSize: 11,
                                     ),
                                   ),
@@ -424,7 +424,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                       Text(
                         'REFLECT',
                         style: AppTypography.metadata.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                          color: colors.outline,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.s),
@@ -459,12 +459,12 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Review saved')));
                           },
                           style: TextButton.styleFrom(
-                            foregroundColor: theme.colorScheme.primary,
+                            foregroundColor: colors.primary,
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                               side: BorderSide(
-                                color: theme.colorScheme.primary.withValues(alpha: 0.25),
+                                color: colors.primary.withValues(alpha: 0.25),
                               ),
                             ),
                           ),
@@ -472,7 +472,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                             'Save Review',
                             style: AppTypography.secondary.copyWith(
                               fontWeight: FontWeight.w600,
-                              color: theme.colorScheme.primary,
+                              color: colors.primary,
                             ),
                           ),
                         ),

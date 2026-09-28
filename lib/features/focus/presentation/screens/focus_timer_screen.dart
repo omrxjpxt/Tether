@@ -71,6 +71,7 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
     final timerData = ref.watch(timerProvider);
     final focusAsync = ref.watch(dailyFocusProvider);
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -100,7 +101,7 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
                 Text(
                   'Focus',
                   style: AppTypography.metadata.copyWith(
-                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                    color: colors.outline,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.s),
@@ -122,7 +123,7 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
                   Icon(
                     Icons.check_circle_outline,
                     size: 48,
-                    color: theme.colorScheme.primary.withValues(alpha: 0.7),
+                    color: colors.primary,
                   ),
                   const SizedBox(height: AppSpacing.l),
                   Text(
@@ -135,7 +136,7 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
                   Text(
                     '${timerData.targetDurationMinutes} minutes',
                     style: AppTypography.body.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                      color: colors.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xxl),
@@ -144,8 +145,8 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
                     child: ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.primary,
-                        foregroundColor: theme.colorScheme.onPrimary,
+                        backgroundColor: colors.primary,
+                        foregroundColor: colors.onPrimary,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -154,7 +155,7 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
                         'Done',
                         style: AppTypography.body.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: theme.colorScheme.onPrimary,
+                          color: colors.onPrimary,
                         ),
                       ),
                     ),
@@ -166,7 +167,7 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
                       fontSize: 80,
                       fontWeight: FontWeight.w200,
                       letterSpacing: -3,
-                      color: theme.textTheme.bodyLarge?.color,
+                      color: colors.onSurface,
                       fontFeatures: const [FontFeature.tabularFigures()],
                     ),
                   ),
@@ -202,8 +203,8 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
                       child: ElevatedButton(
                         onPressed: () => ref.read(timerProvider.notifier).start(),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.colorScheme.primary,
-                          foregroundColor: theme.colorScheme.onPrimary,
+                          backgroundColor: colors.primary,
+                          foregroundColor: colors.onPrimary,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
@@ -212,7 +213,7 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
                           'Start',
                           style: AppTypography.body.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: theme.colorScheme.onPrimary,
+                            color: colors.onPrimary,
                           ),
                         ),
                       ),
@@ -230,7 +231,7 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
                         child: Text(
                           'Pause',
                           style: AppTypography.body.copyWith(
-                            color: theme.textTheme.bodyMedium?.color,
+                            color: colors.onSurfaceVariant,
                           ),
                         ),
                       ),
@@ -241,8 +242,8 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
                       child: ElevatedButton(
                         onPressed: () => ref.read(timerProvider.notifier).resume(),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.colorScheme.primary,
-                          foregroundColor: theme.colorScheme.onPrimary,
+                          backgroundColor: colors.primary,
+                          foregroundColor: colors.onPrimary,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
@@ -251,7 +252,7 @@ class _FocusTimerScreenState extends ConsumerState<FocusTimerScreen> with Widget
                           'Resume',
                           style: AppTypography.body.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: theme.colorScheme.onPrimary,
+                            color: colors.onPrimary,
                           ),
                         ),
                       ),
@@ -283,6 +284,7 @@ class _DurationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -291,20 +293,19 @@ class _DurationButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           color: isSelected
-              ? theme.colorScheme.primary.withValues(alpha: 0.08)
+              ? colors.primary.withValues(alpha: 0.08)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: isSelected
-                ? theme.colorScheme.primary.withValues(alpha: 0.3)
-                : theme.dividerColor.withValues(alpha: 0.5),
-            width: 0.5,
+                ? colors.primary.withValues(alpha: 0.3)
+                : theme.dividerColor,
           ),
         ),
         child: Text(
           '$minutes m',
           style: AppTypography.secondary.copyWith(
-            color: isSelected ? theme.colorScheme.primary : theme.textTheme.bodyMedium?.color,
+            color: isSelected ? colors.primary : colors.onSurfaceVariant,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           ),
         ),

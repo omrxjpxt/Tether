@@ -56,6 +56,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
     final now = DateUtilsLocal.parseDateKey(dateKey);
     final dateStr = DateFormat('EEEE, MMMM d').format(now);
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -68,8 +69,8 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
           );
         },
         elevation: 2,
-        backgroundColor: theme.colorScheme.primary,
-        foregroundColor: theme.colorScheme.onPrimary,
+        backgroundColor: colors.primary,
+        foregroundColor: colors.onPrimary,
         shape: const CircleBorder(),
         child: const Icon(Icons.add, size: 24),
       ),
@@ -89,7 +90,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
                         Text(
                           dateStr,
                           style: AppTypography.caption.copyWith(
-                            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+                            color: colors.onSurfaceVariant,
                             letterSpacing: 0.2,
                           ),
                         ),
@@ -134,7 +135,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
                               child: Text(
                                 '$completedCount of ${habits.length} complete',
                                 style: AppTypography.caption.copyWith(
-                                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                                  color: colors.outline,
                                 ),
                               ),
                             );
@@ -172,6 +173,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
 
   Widget _buildEmptyState(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
@@ -189,7 +191,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
           Text(
             'Connect a small action to something\nyou already do.',
             style: AppTypography.body.copyWith(
-              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+              color: colors.onSurfaceVariant,
               height: 1.5,
             ),
             textAlign: TextAlign.center,
@@ -210,7 +212,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
           Text(
             'OR TRY A SUGGESTION',
             style: AppTypography.metadata.copyWith(
-              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+              color: colors.outline,
             ),
             textAlign: TextAlign.center,
           ),
@@ -225,6 +227,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
 
   Widget _buildSuggestion(BuildContext context, String trigger, String action) {
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return InkWell(
       onTap: () {
         final habit = Habit(
@@ -240,10 +243,8 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          border: Border.all(
-            color: theme.dividerColor.withValues(alpha: 0.5),
-            width: 0.5,
-          ),
+          color: colors.surface,
+          border: Border.all(color: theme.dividerColor),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -252,7 +253,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> with WidgetsBindingOb
             Text(
               'After I $trigger',
               style: AppTypography.caption.copyWith(
-                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                color: colors.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 3),

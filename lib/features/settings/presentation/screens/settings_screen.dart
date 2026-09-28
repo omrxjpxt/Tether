@@ -185,6 +185,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     final settings = ref.watch(appSettingsProvider);
 
     return SafeArea(
@@ -202,11 +203,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(height: AppSpacing.s),
               Container(
                 decoration: BoxDecoration(
+                  color: colors.surface,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: theme.dividerColor.withValues(alpha: 0.7),
-                    width: 0.5,
-                  ),
+                  border: Border.all(color: theme.dividerColor),
                 ),
                 child: Column(
                   children: [
@@ -219,7 +218,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ref.read(appSettingsProvider.notifier).updateThemeMode('system');
                       },
                     ),
-                    Divider(height: 0.5, thickness: 0.5, color: theme.dividerColor.withValues(alpha: 0.5)),
+                    Divider(height: 0.5, thickness: 0.5, color: theme.dividerColor),
                     _ThemeOptionTile(
                       label: 'Light',
                       subtitle: 'Warm and minimal',
@@ -229,7 +228,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ref.read(appSettingsProvider.notifier).updateThemeMode('light');
                       },
                     ),
-                    Divider(height: 0.5, thickness: 0.5, color: theme.dividerColor.withValues(alpha: 0.5)),
+                    Divider(height: 0.5, thickness: 0.5, color: theme.dividerColor),
                     _ThemeOptionTile(
                       label: 'Dark',
                       subtitle: 'Calm and focused',
@@ -250,11 +249,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(height: AppSpacing.s),
               Container(
                 decoration: BoxDecoration(
+                  color: colors.surface,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: theme.dividerColor.withValues(alpha: 0.7),
-                    width: 0.5,
-                  ),
+                  border: Border.all(color: theme.dividerColor),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 child: Row(
@@ -264,8 +261,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ? Icons.notifications_active_outlined
                           : Icons.notifications_off_outlined,
                       color: _notificationsPermissionGranted
-                          ? theme.colorScheme.primary
-                          : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                          ? colors.primary
+                          : colors.onSurfaceVariant,
                       size: 20,
                     ),
                     const SizedBox(width: 14),
@@ -283,7 +280,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 ? 'Scheduled per habit'
                                 : 'Disabled in system settings',
                             style: AppTypography.caption.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                              color: colors.outline,
                               fontSize: 12,
                             ),
                           ),
@@ -319,11 +316,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(height: AppSpacing.s),
               Container(
                 decoration: BoxDecoration(
+                  color: colors.surface,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: theme.dividerColor.withValues(alpha: 0.7),
-                    width: 0.5,
-                  ),
+                  border: Border.all(color: theme.dividerColor),
                 ),
                 child: Column(
                   children: [
@@ -340,11 +335,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           : Icon(
                               Icons.chevron_right,
                               size: 18,
-                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.3),
+                              color: colors.outline,
                             ),
                       onTap: _isExporting ? null : _exportBackup,
                     ),
-                    Divider(height: 0.5, thickness: 0.5, color: theme.dividerColor.withValues(alpha: 0.5)),
+                    Divider(height: 0.5, thickness: 0.5, color: theme.dividerColor),
                     _SettingsRow(
                       icon: Icons.download_outlined,
                       title: 'Import backup',
@@ -358,7 +353,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           : Icon(
                               Icons.chevron_right,
                               size: 18,
-                              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.3),
+                              color: colors.outline,
                             ),
                       onTap: _isImporting ? null : _importBackup,
                     ),
@@ -368,7 +363,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
               const SizedBox(height: 48),
 
-              // ABOUT — minimal, bottom of page
+              // ABOUT
               Center(
                 child: Column(
                   children: [
@@ -382,14 +377,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     Text(
                       'Build habits that stick.',
                       style: AppTypography.caption.copyWith(
-                        color: theme.colorScheme.primary,
+                        color: colors.primary,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.m),
                     Text(
                       'Calm, offline-first habit tracking.\nAll data stays on your device.',
                       style: AppTypography.caption.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                        color: colors.onSurfaceVariant,
                         height: 1.5,
                       ),
                       textAlign: TextAlign.center,
@@ -398,7 +393,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     Text(
                       'Version 1.0.0',
                       style: AppTypography.metadata.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.25),
+                        color: colors.outline,
                         fontSize: 11,
                       ),
                     ),
@@ -422,7 +417,7 @@ class _SectionLabel extends StatelessWidget {
     return Text(
       text,
       style: AppTypography.metadata.copyWith(
-        color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+        color: Theme.of(context).colorScheme.outline,
       ),
     );
   }
@@ -444,6 +439,7 @@ class _ThemeOptionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
@@ -463,7 +459,7 @@ class _ThemeOptionTile extends StatelessWidget {
                   Text(
                     subtitle,
                     style: AppTypography.caption.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                      color: colors.outline,
                       fontSize: 12,
                     ),
                   ),
@@ -471,7 +467,7 @@ class _ThemeOptionTile extends StatelessWidget {
               ),
             ),
             if (isSelected)
-              Icon(Icons.check, color: theme.colorScheme.primary, size: 18),
+              Icon(Icons.check, color: colors.primary, size: 18),
           ],
         ),
       ),
@@ -497,6 +493,7 @@ class _SettingsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
@@ -504,7 +501,7 @@ class _SettingsRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            Icon(icon, size: 20, color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5)),
+            Icon(icon, size: 20, color: colors.onSurfaceVariant),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -515,7 +512,7 @@ class _SettingsRow extends StatelessWidget {
                   Text(
                     subtitle,
                     style: AppTypography.caption.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.45),
+                      color: colors.outline,
                       fontSize: 12,
                     ),
                   ),
