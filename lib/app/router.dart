@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tether/features/habits/presentation/screens/today_screen.dart';
 import 'package:tether/shared/widgets/app_scaffold.dart';
+import 'package:tether/app/theme/app_typography.dart';
+import 'package:tether/app/theme/app_spacing.dart';
 
 class AppNavigationShell extends StatefulWidget {
   const AppNavigationShell({super.key});
@@ -12,9 +15,9 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = const [
-    Center(child: Text('Today (Phase 2)')),
-    Center(child: Text('Review (Phase 3)')),
-    Center(child: Text('Settings (Phase 4)')),
+    TodayScreen(),
+    _ReviewPlaceholder(),
+    _SettingsPlaceholder(),
   ];
 
   @override
@@ -33,6 +36,54 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
           NavigationDestination(icon: Icon(Icons.bar_chart), label: 'Review'),
           NavigationDestination(icon: Icon(Icons.settings), label: 'Settings'),
         ],
+      ),
+    );
+  }
+}
+
+class _ReviewPlaceholder extends StatelessWidget {
+  const _ReviewPlaceholder();
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Weekly review', style: AppTypography.headingSection),
+            const SizedBox(height: AppSpacing.s),
+            Text(
+              'Your weekly consistency review will appear here.',
+              style: AppTypography.body,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingsPlaceholder extends StatelessWidget {
+  const _SettingsPlaceholder();
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Settings', style: AppTypography.headingSection),
+            const SizedBox(height: AppSpacing.s),
+            Text(
+              'Tether preferences will appear here.',
+              style: AppTypography.body,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
