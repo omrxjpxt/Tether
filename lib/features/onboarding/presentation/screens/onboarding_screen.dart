@@ -49,8 +49,8 @@ class OnboardingScreen extends ConsumerWidget {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 540),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -66,7 +66,7 @@ class OnboardingScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(height: AppSpacing.m),
 
                   // Tether Minimal Icon Symbol
                   Center(
@@ -88,7 +88,7 @@ class OnboardingScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.l),
 
                   Text(
                     'Tether',
@@ -104,7 +104,7 @@ class OnboardingScreen extends ConsumerWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: AppSpacing.l),
+                  const SizedBox(height: AppSpacing.m),
                   Text(
                     '"Connect a small action to something you already do."',
                     style: AppTypography.body.copyWith(
@@ -115,7 +115,7 @@ class OnboardingScreen extends ConsumerWidget {
                     textAlign: TextAlign.center,
                   ),
 
-                  const Spacer(),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   Text(
                     'START WITH A TEMPLATE',
@@ -157,7 +157,7 @@ class OnboardingScreen extends ConsumerWidget {
                     ),
                   ),
 
-                  const Spacer(),
+                  const SizedBox(height: AppSpacing.xl),
 
                   AppButton(
                     label: 'Create custom habit',
@@ -171,7 +171,7 @@ class OnboardingScreen extends ConsumerWidget {
                       );
                     },
                   ),
-                  const SizedBox(height: AppSpacing.s),
+                  const SizedBox(height: AppSpacing.m),
                 ],
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:tether/app/theme/app_spacing.dart';
@@ -320,6 +321,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                         width: double.infinity,
                         child: OutlinedButton(
                           onPressed: () {
+                            HapticFeedback.lightImpact();
                             int exp = 0;
                             int comp = 0;
                             if (habitsAsync is AsyncData) {

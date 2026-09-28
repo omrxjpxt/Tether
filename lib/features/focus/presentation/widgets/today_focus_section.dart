@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tether/app/theme/app_spacing.dart';
 import 'package:tether/app/theme/app_typography.dart';
@@ -107,6 +108,7 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          HapticFeedback.lightImpact();
                           ref.read(dailyFocusProvider.notifier).toggleCompleted();
                         },
                         child: AnimatedContainer(
@@ -172,7 +174,10 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                     width: double.infinity,
                     child: OutlinedButton(
                       onPressed: () {
-                        ref.read(timerProvider.notifier).cancelTimer(); // reset before opening
+                        HapticFeedback.lightImpact();
+                        if (ref.read(timerProvider).state == TimerState.completed) {
+                          ref.read(timerProvider.notifier).cancelTimer();
+                        }
                         showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,

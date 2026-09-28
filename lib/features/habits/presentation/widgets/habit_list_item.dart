@@ -122,24 +122,27 @@ class HabitListItem extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.s),
-          Row(
-            children: last7Days.map((isCompleted) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 6.0),
-                child: Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: isCompleted ? theme.colorScheme.primary : Colors.transparent,
-                    border: Border.all(
-                      color: isCompleted ? theme.colorScheme.primary : theme.dividerColor,
-                      width: 1,
+          Semantics(
+            label: '7-day history: ${last7Days.where((c) => c).length} of 7 days completed',
+            child: Row(
+              children: last7Days.map((isCompleted) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 6.0),
+                  child: Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isCompleted ? theme.colorScheme.primary : Colors.transparent,
+                      border: Border.all(
+                        color: isCompleted ? theme.colorScheme.primary : theme.dividerColor,
+                        width: 1,
+                      ),
                     ),
                   ),
-                ),
-              );
-            }).toList(),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),
