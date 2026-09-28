@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tether/app/theme/app_spacing.dart';
 import 'package:tether/app/theme/app_typography.dart';
+import 'package:tether/core/services/notification_providers.dart';
 import 'package:tether/features/habits/domain/models/habit.dart';
 import 'package:tether/features/habits/domain/models/habit_frequency.dart';
 import 'package:tether/features/habits/presentation/providers/habit_providers.dart';
@@ -21,6 +23,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
   late TextEditingController _actionController;
   FrequencyType _frequencyType = FrequencyType.daily;
   int _timesPerWeek = 4;
+  TimeOfDay? _reminderTime;
 
   @override
   void initState() {
@@ -32,6 +35,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
       if (_frequencyType == FrequencyType.timesPerWeek) {
         _timesPerWeek = widget.existingHabit!.frequency.timesPerWeek ?? 4;
       }
+      _reminderTime = widget.existingHabit!.reminderTime;
     }
   }
 
@@ -40,6 +44,38 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
     _triggerController.dispose();
     _actionController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickReminderTime() async {
+    HapticFeedback.selectionClick();
+    final notifService = ref.read(notificationServiceProvider);
+    bool granted = await notifService.isPermissionGranted();
+    if (!granted) {
+      granted = await notifService.requestPermission();
+      if (!granted) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Notifications are disabled. You can enable them in system settings.'),
+            ),
+          );
+        }
+        return;
+      }
+    }
+
+    if (!mounted) return;
+    final initial = _reminderTime ?? const TimeOfDay(hour: 8, minute: 30);
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: initial,
+    );
+
+    if (picked != null && mounted) {
+      setState(() {
+        _reminderTime = picked;
+      });
+    }
   }
 
   void _save() {
@@ -59,26 +95,38 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
         frequency = HabitFrequency.timesPerWeek(_timesPerWeek);
         break;
       case FrequencyType.custom:
-        frequency = HabitFrequency.daily(); // Fallback for phase 2
+        frequency = HabitFrequency.daily();
         break;
     }
+
+    HapticFeedback.lightImpact();
 
     if (widget.existingHabit != null) {
       final updated = widget.existingHabit!.copyWith(
         trigger: trigger,
         action: action,
         frequency: frequency,
+        reminderTime: _reminderTime,
       );
       ref.read(habitsProvider.notifier).updateHabit(updated);
+      if (_reminderTime != null) {
+        ref.read(notificationServiceProvider).scheduleHabitReminder(updated);
+      } else {
+        ref.read(notificationServiceProvider).cancelHabitReminder(updated.id);
+      }
     } else {
       final habit = Habit(
         id: const Uuid().v4(),
         trigger: trigger,
         action: action,
         frequency: frequency,
+        reminderTime: _reminderTime,
         createdAt: DateTime.now(),
       );
       ref.read(habitsProvider.notifier).addHabit(habit);
+      if (_reminderTime != null) {
+        ref.read(notificationServiceProvider).scheduleHabitReminder(habit);
+      }
     }
     Navigator.of(context).pop();
   }
@@ -110,7 +158,10 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                 if (isEditing)
                   IconButton(
                     onPressed: () {
-                      ref.read(habitsProvider.notifier).deleteHabit(widget.existingHabit!.id);
+                      HapticFeedback.selectionClick();
+                      final deletedHabit = widget.existingHabit!;
+                      ref.read(habitsProvider.notifier).deleteHabit(deletedHabit.id);
+                      ref.read(notificationServiceProvider).cancelHabitReminder(deletedHabit.id);
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -118,7 +169,10 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                           action: SnackBarAction(
                             label: 'Undo',
                             onPressed: () {
-                              ref.read(habitsProvider.notifier).addHabit(widget.existingHabit!);
+                              ref.read(habitsProvider.notifier).addHabit(deletedHabit);
+                              if (deletedHabit.reminderTime != null) {
+                                ref.read(notificationServiceProvider).scheduleHabitReminder(deletedHabit);
+                              }
                             },
                           ),
                         ),
@@ -195,6 +249,77 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                 ],
               ),
             ],
+
+            const SizedBox(height: AppSpacing.l),
+
+            // REMINDER SECTION
+            Text('REMINDER', style: AppTypography.metadata),
+            const SizedBox(height: AppSpacing.xs),
+            InkWell(
+              onTap: _pickReminderTime,
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: _reminderTime != null ? theme.colorScheme.primary : theme.dividerColor,
+                  ),
+                  color: _reminderTime != null
+                      ? theme.colorScheme.primary.withValues(alpha: 0.05)
+                      : Colors.transparent,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      _reminderTime != null ? Icons.notifications_active : Icons.notifications_none,
+                      color: _reminderTime != null ? theme.colorScheme.primary : theme.iconTheme.color,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _reminderTime != null
+                                ? 'Reminder at ${_reminderTime!.format(context)}'
+                                : 'Set a daily reminder',
+                            style: AppTypography.body.copyWith(
+                              fontWeight: _reminderTime != null ? FontWeight.w500 : FontWeight.normal,
+                            ),
+                          ),
+                          if (_reminderTime != null) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              _frequencyType == FrequencyType.timesPerWeek
+                                  ? 'Reminds daily to help reach your target'
+                                  : (_frequencyType == FrequencyType.weekdays
+                                      ? 'Monday to Friday'
+                                      : 'Every day'),
+                              style: AppTypography.metadata.copyWith(
+                                color: theme.textTheme.bodyMedium?.color,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    if (_reminderTime != null)
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 18),
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          setState(() => _reminderTime = null);
+                        },
+                      )
+                    else
+                      const Icon(Icons.chevron_right, size: 20),
+                  ],
+                ),
+              ),
+            ),
+
             const SizedBox(height: AppSpacing.xl),
             SizedBox(
               width: double.infinity,
@@ -215,7 +340,10 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
     return FilterChip(
       selected: isSelected,
       label: Text(label),
-      onSelected: (_) => setState(() => _frequencyType = type),
+      onSelected: (_) {
+        HapticFeedback.selectionClick();
+        setState(() => _frequencyType = type);
+      },
       selectedColor: theme.colorScheme.primary.withValues(alpha: 0.1),
       checkmarkColor: theme.colorScheme.primary,
       shape: RoundedRectangleBorder(

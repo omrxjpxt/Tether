@@ -2,16 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tether/app/app.dart';
+import 'package:tether/core/services/notification_providers.dart';
+import 'package:tether/core/services/notification_service.dart';
 import 'package:tether/features/habits/presentation/providers/habit_providers.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   
+  final notificationService = LocalNotificationService();
+  await notificationService.initialize();
+
   runApp(
     ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
+        notificationServiceProvider.overrideWithValue(notificationService),
       ],
       child: const TetherApp(),
     ),

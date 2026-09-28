@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tether/app/theme/app_spacing.dart';
 import 'package:tether/app/theme/app_typography.dart';
+import 'package:tether/core/services/notification_providers.dart';
 import 'package:tether/core/utils/date_utils.dart';
 import 'package:tether/features/habits/domain/models/habit.dart';
 import 'package:tether/features/habits/domain/models/habit_frequency.dart';
@@ -52,6 +54,7 @@ class HabitListItem extends ConsumerWidget {
 
     return HabitRowShell(
       onTap: () {
+        HapticFeedback.selectionClick();
         showModalBottomSheet(
           context: context,
           isScrollControlled: true,
@@ -64,8 +67,14 @@ class HabitListItem extends ConsumerWidget {
         button: true,
         child: GestureDetector(
           onTap: () {
+            if (!isCompletedToday) {
+              HapticFeedback.mediumImpact();
+            } else {
+              HapticFeedback.lightImpact();
+            }
             final updated = HabitService.toggleHabitToday(habit, now);
             ref.read(habitsProvider.notifier).updateHabit(updated);
+            ref.read(notificationServiceProvider).handleHabitCompletionChanged(updated, !isCompletedToday);
           },
           behavior: HitTestBehavior.opaque,
           child: Container(

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tether/features/habits/presentation/screens/today_screen.dart';
 import 'package:tether/features/review/presentation/screens/review_screen.dart';
+import 'package:tether/features/settings/presentation/screens/settings_screen.dart';
 import 'package:tether/shared/widgets/app_scaffold.dart';
-import 'package:tether/app/theme/app_typography.dart';
-import 'package:tether/app/theme/app_spacing.dart';
 
 class AppNavigationShell extends StatefulWidget {
   const AppNavigationShell({super.key});
@@ -18,7 +17,7 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
   final List<Widget> _screens = const [
     TodayScreen(),
     ReviewScreen(),
-    _SettingsPlaceholder(),
+    SettingsScreen(),
   ];
 
   @override
@@ -37,30 +36,6 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
           NavigationDestination(icon: Icon(Icons.bar_chart), label: 'Review'),
           NavigationDestination(icon: Icon(Icons.settings), label: 'Settings'),
         ],
-      ),
-    );
-  }
-}
-
-class _SettingsPlaceholder extends StatelessWidget {
-  const _SettingsPlaceholder();
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Settings', style: AppTypography.headingSection),
-            const SizedBox(height: AppSpacing.s),
-            Text(
-              'Tether preferences will appear here.',
-              style: AppTypography.body,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
       ),
     );
   }
