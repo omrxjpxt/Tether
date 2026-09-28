@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tether/core/utils/date_utils.dart';
 import 'package:tether/features/focus/domain/models/daily_focus.dart';
+import 'package:tether/features/focus/domain/models/focus_session.dart';
 import 'package:tether/features/focus/domain/repositories/focus_repository.dart';
 import 'package:tether/features/focus/data/repositories/shared_prefs_focus_repository.dart';
 import 'package:tether/features/habits/presentation/providers/habit_providers.dart';
@@ -66,5 +67,24 @@ class DailyFocusNotifier extends AsyncNotifier<DailyFocus?> {
   Future<void> clearFocus() async {
     state = const AsyncValue.data(null);
     await _repository.deleteDailyFocus(_dateKey);
+  }
+}
+
+final focusSessionsProvider = AsyncNotifierProvider<FocusSessionsNotifier, List<FocusSession>>(() {
+  return FocusSessionsNotifier();
+});
+
+class FocusSessionsNotifier extends AsyncNotifier<List<FocusSession>> {
+  late FocusRepository _repository;
+
+  @override
+  Future<List<FocusSession>> build() async {
+    _repository = ref.watch(focusRepositoryProvider);
+    return await _repository.getFocusSessions();
+  }
+
+  Future<void> refresh() async {
+    state = const AsyncValue.loading();
+    state = AsyncValue.data(await _repository.getFocusSessions());
   }
 }

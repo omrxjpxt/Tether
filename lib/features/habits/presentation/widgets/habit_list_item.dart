@@ -24,12 +24,27 @@ class HabitListItem extends ConsumerWidget {
     // Calculate streak
     final streak = HabitService.currentStreak(habit, now);
     String streakText = '$streak days';
+    
     if (habit.frequency.type == FrequencyType.timesPerWeek) {
       final target = habit.frequency.timesPerWeek ?? 1;
       final start = DateUtilsLocal.startOfWeek(now);
       final end = DateUtilsLocal.endOfWeek(now);
       final weekCompletions = HabitService.actualCompletions(habit, start, end);
       streakText = '$weekCompletions / $target this week';
+    } else {
+      final recovered = HabitService.recoveredToday(habit, now);
+      final missed = HabitService.missedYesterday(habit, now);
+      final misses = HabitService.consecutiveMisses(habit, now);
+
+      if (missed && !isCompletedToday) {
+        if (misses >= 3) {
+          streakText = 'Ready to restart?';
+        } else {
+          streakText = 'Missed yesterday. Back today?';
+        }
+      } else if (recovered && streak == 1) {
+        streakText = 'Back on track';
+      }
     }
 
     // Last 7 days
