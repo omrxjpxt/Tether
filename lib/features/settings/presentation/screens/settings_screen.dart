@@ -1,4 +1,5 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -161,9 +162,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       await ref.read(appSettingsProvider.notifier).reload();
 
       // Reschedule reminders
-      await ref
-          .read(notificationServiceProvider)
-          .rescheduleAllHabitReminders(backupData.habits);
+      if (!kIsWeb) {
+        await ref
+            .read(notificationServiceProvider)
+            .rescheduleAllHabitReminders(backupData.habits);
+      }
 
       HapticFeedback.mediumImpact();
       if (mounted) {
@@ -257,10 +260,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 child: Row(
                   children: [
                     Icon(
-                      _notificationsPermissionGranted
-                          ? Icons.notifications_active_outlined
-                          : Icons.notifications_off_outlined,
-                      color: _notificationsPermissionGranted
+                      kIsWeb
+                          ? Icons.notifications_none_outlined
+                          : (_notificationsPermissionGranted
+                              ? Icons.notifications_active_outlined
+                              : Icons.notifications_off_outlined),
+                      color: (!kIsWeb && _notificationsPermissionGranted)
                           ? colors.primary
                           : colors.onSurfaceVariant,
                       size: 20,
@@ -276,9 +281,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            _notificationsPermissionGranted
-                                ? 'Scheduled per habit'
-                                : 'Disabled in system settings',
+                            kIsWeb
+                                ? 'Reminders are available in the Tether mobile app'
+                                : (_notificationsPermissionGranted
+                                    ? 'Scheduled per habit'
+                                    : 'Disabled in system settings'),
                             style: AppTypography.caption.copyWith(
                               color: colors.outline,
                               fontSize: 12,
@@ -287,7 +294,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ],
                       ),
                     ),
-                    if (!_notificationsPermissionGranted)
+                    if (!kIsWeb && !_notificationsPermissionGranted)
                       TextButton(
                         onPressed: () async {
                           final messenger = ScaffoldMessenger.of(context);

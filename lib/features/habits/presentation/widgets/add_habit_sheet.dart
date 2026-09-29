@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -109,10 +110,12 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
         reminderTime: _reminderTime,
       );
       ref.read(habitsProvider.notifier).updateHabit(updated);
-      if (_reminderTime != null) {
-        ref.read(notificationServiceProvider).scheduleHabitReminder(updated);
-      } else {
-        ref.read(notificationServiceProvider).cancelHabitReminder(updated.id);
+      if (!kIsWeb) {
+        if (_reminderTime != null) {
+          ref.read(notificationServiceProvider).scheduleHabitReminder(updated);
+        } else {
+          ref.read(notificationServiceProvider).cancelHabitReminder(updated.id);
+        }
       }
     } else {
       final habit = Habit(
@@ -124,7 +127,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
         createdAt: DateTime.now(),
       );
       ref.read(habitsProvider.notifier).addHabit(habit);
-      if (_reminderTime != null) {
+      if (!kIsWeb && _reminderTime != null) {
         ref.read(notificationServiceProvider).scheduleHabitReminder(habit);
       }
     }
@@ -177,7 +180,9 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                       HapticFeedback.selectionClick();
                       final deletedHabit = widget.existingHabit!;
                       ref.read(habitsProvider.notifier).deleteHabit(deletedHabit.id);
-                      ref.read(notificationServiceProvider).cancelHabitReminder(deletedHabit.id);
+                      if (!kIsWeb) {
+                        ref.read(notificationServiceProvider).cancelHabitReminder(deletedHabit.id);
+                      }
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -186,7 +191,7 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                             label: 'Undo',
                             onPressed: () {
                               ref.read(habitsProvider.notifier).addHabit(deletedHabit);
-                              if (deletedHabit.reminderTime != null) {
+                              if (!kIsWeb && deletedHabit.reminderTime != null) {
                                 ref.read(notificationServiceProvider).scheduleHabitReminder(deletedHabit);
                               }
                             },
@@ -298,30 +303,21 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
-            InkWell(
-              onTap: _pickReminderTime,
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
+            if (kIsWeb)
+              Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: _reminderTime != null
-                        ? colors.primary.withValues(alpha: 0.3)
-                        : theme.dividerColor,
+                    color: theme.dividerColor,
                     width: 0.5,
                   ),
-                  color: _reminderTime != null
-                      ? colors.primary.withValues(alpha: 0.04)
-                      : Colors.transparent,
                 ),
                 child: Row(
                   children: [
                     Icon(
-                      _reminderTime != null ? Icons.notifications_active_outlined : Icons.notifications_none_outlined,
-                      color: _reminderTime != null
-                          ? colors.primary
-                          : colors.onSurfaceVariant,
+                      Icons.notifications_none_outlined,
+                      color: colors.outline,
                       size: 20,
                     ),
                     const SizedBox(width: 12),
@@ -334,49 +330,104 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                                 ? 'Reminder at ${_reminderTime!.format(context)}'
                                 : 'Set a daily reminder',
                             style: AppTypography.body.copyWith(
-                              fontWeight: _reminderTime != null ? FontWeight.w500 : FontWeight.normal,
                               fontSize: 15,
+                              color: colors.onSurfaceVariant,
                             ),
                           ),
-                          if (_reminderTime != null) ...[
-                            const SizedBox(height: 2),
-                            Text(
-                              _frequencyType == FrequencyType.timesPerWeek
-                                  ? 'Daily reminder to reach your target'
-                                  : (_frequencyType == FrequencyType.weekdays
-                                      ? 'Monday to Friday'
-                                      : 'Every day'),
-                              style: AppTypography.caption.copyWith(
-                                color: colors.outline,
-                                fontSize: 12,
-                              ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Reminders are available in the Tether mobile app.',
+                            style: AppTypography.caption.copyWith(
+                              color: colors.outline,
+                              fontSize: 12,
                             ),
-                          ],
+                          ),
                         ],
                       ),
                     ),
-                    if (_reminderTime != null)
-                      GestureDetector(
-                        onTap: () {
-                          HapticFeedback.selectionClick();
-                          setState(() => _reminderTime = null);
-                        },
-                        child: Icon(
-                          Icons.close,
-                          size: 16,
-                          color: colors.onSurfaceVariant,
-                        ),
-                      )
-                    else
-                      Icon(
-                        Icons.chevron_right,
-                        size: 18,
-                        color: colors.outline,
-                      ),
                   ],
                 ),
+              )
+            else
+              InkWell(
+                onTap: _pickReminderTime,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _reminderTime != null
+                          ? colors.primary.withValues(alpha: 0.3)
+                          : theme.dividerColor,
+                      width: 0.5,
+                    ),
+                    color: _reminderTime != null
+                        ? colors.primary.withValues(alpha: 0.04)
+                        : Colors.transparent,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _reminderTime != null ? Icons.notifications_active_outlined : Icons.notifications_none_outlined,
+                        color: _reminderTime != null
+                            ? colors.primary
+                            : colors.onSurfaceVariant,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _reminderTime != null
+                                  ? 'Reminder at ${_reminderTime!.format(context)}'
+                                  : 'Set a daily reminder',
+                              style: AppTypography.body.copyWith(
+                                fontWeight: _reminderTime != null ? FontWeight.w500 : FontWeight.normal,
+                                fontSize: 15,
+                              ),
+                            ),
+                            if (_reminderTime != null) ...[
+                              const SizedBox(height: 2),
+                              Text(
+                                _frequencyType == FrequencyType.timesPerWeek
+                                    ? 'Daily reminder to reach your target'
+                                    : (_frequencyType == FrequencyType.weekdays
+                                        ? 'Monday to Friday'
+                                        : 'Every day'),
+                                style: AppTypography.caption.copyWith(
+                                  color: colors.outline,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      if (_reminderTime != null)
+                        GestureDetector(
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            setState(() => _reminderTime = null);
+                          },
+                          child: Icon(
+                            Icons.close,
+                            size: 16,
+                            color: colors.onSurfaceVariant,
+                          ),
+                        )
+                      else
+                        Icon(
+                          Icons.chevron_right,
+                          size: 18,
+                          color: colors.outline,
+                        ),
+                    ],
+                  ),
+                ),
               ),
-            ),
 
             const SizedBox(height: AppSpacing.xl),
             SizedBox(

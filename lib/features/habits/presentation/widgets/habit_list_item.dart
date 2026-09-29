@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -74,7 +75,9 @@ class HabitListItem extends ConsumerWidget {
             }
             final updated = HabitService.toggleHabitToday(habit, now);
             ref.read(habitsProvider.notifier).updateHabit(updated);
-            ref.read(notificationServiceProvider).handleHabitCompletionChanged(updated, !isCompletedToday);
+            if (!kIsWeb) {
+              ref.read(notificationServiceProvider).handleHabitCompletionChanged(updated, !isCompletedToday);
+            }
           },
           behavior: HitTestBehavior.opaque,
           child: Container(
