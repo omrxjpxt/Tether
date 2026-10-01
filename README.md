@@ -1,4 +1,4 @@
-# Tether 
+# Tether  
 
 > **Build habits that stick.**
 
