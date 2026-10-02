@@ -32,7 +32,7 @@ Tether helps you build sustainable daily routines by anchoring new micro-actions
 ### 🔗 Habit Stacking & Creation
 - **Stacking Flow**: Modal creation sheet prompting for an established trigger and clear micro-action.
 - **Flexible Frequency Types**:
-  - **Daily**: Every day.
+  - **Daily**: Every day. 
   - **Weekdays**: Monday through Friday.
   - **Times per week**: Flexible target from 1× to 6× per week.
   - **Custom**: Specific days of the week.
