@@ -238,7 +238,7 @@ flutter analyze
 flutter test
 ```
 
-### Running Locally
+### Running Locally 
 
 ```bash
 # Run in Google Chrome
