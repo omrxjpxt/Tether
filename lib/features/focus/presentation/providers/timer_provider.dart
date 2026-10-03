@@ -97,8 +97,8 @@ class TimerNotifier extends Notifier<TimerData> {
 
           if (totalElapsed >= targetSeconds) {
             // Completed while app was inactive/killed
+            _persistClear();
             Future.microtask(() async {
-              await _persistClear();
               final session = FocusSession(
                 id: const Uuid().v4(),
                 date: startedAt,
@@ -217,14 +217,14 @@ class TimerNotifier extends Notifier<TimerData> {
   }
 
   void _complete() async {
+    if (state.state != TimerState.running) return;
     _ticker?.cancel();
-    HapticFeedback.mediumImpact();
-    await _persistClear();
-
     state = state.update(
       state: TimerState.completed,
       currentElapsedSeconds: state.targetDurationMinutes * 60,
     );
+    HapticFeedback.mediumImpact();
+    await _persistClear();
 
     final session = FocusSession(
       id: const Uuid().v4(),

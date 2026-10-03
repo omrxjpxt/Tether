@@ -8,11 +8,15 @@ class DateUtilsLocal {
   }
 
   static String yesterdayKey(DateTime now) {
-    return _format.format(now.subtract(const Duration(days: 1)));
+    return _format.format(DateTime(now.year, now.month, now.day - 1));
   }
 
   static String dateKey(DateTime date) {
     return _format.format(date);
+  }
+
+  static DateTime addDays(DateTime date, int days) {
+    return DateTime(date.year, date.month, date.day + days);
   }
 
   static DateTime parseDateKey(String key) {
@@ -56,6 +60,6 @@ class DateUtilsLocal {
 
   static DateTime endOfWeek(DateTime date) {
     final start = startOfWeek(date);
-    return start.add(const Duration(days: 6));
+    return DateTime(start.year, start.month, start.day + 6, 23, 59, 59, 999);
   }
 }

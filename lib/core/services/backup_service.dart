@@ -338,5 +338,8 @@ class BackupService {
     // 5. Write settings
     final settingsJson = jsonEncode(backup.settings.toJson());
     await _prefs.setString('app_settings_v1', settingsJson);
+
+    // 6. Clear any stale active timer
+    await _prefs.remove('active_timer_v1');
   }
 }

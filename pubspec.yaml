@@ -1,5 +1,5 @@
 name: tether
-description: "A new Flutter project."
+description: "Tether — Build habits that stick. A calm, offline-first habit and focus application."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

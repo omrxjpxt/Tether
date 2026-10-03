@@ -285,28 +285,33 @@ class _DurationButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? colors.primary.withValues(alpha: 0.08)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: '$minutes minutes focus session duration',
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeInOut,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          decoration: BoxDecoration(
             color: isSelected
-                ? colors.primary.withValues(alpha: 0.3)
-                : theme.dividerColor,
+                ? colors.primary.withValues(alpha: 0.08)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: isSelected
+                  ? colors.primary.withValues(alpha: 0.3)
+                  : theme.dividerColor,
+            ),
           ),
-        ),
-        child: Text(
-          '$minutes m',
-          style: AppTypography.secondary.copyWith(
-            color: isSelected ? colors.primary : colors.onSurfaceVariant,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+          child: Text(
+            '$minutes m',
+            style: AppTypography.secondary.copyWith(
+              color: isSelected ? colors.primary : colors.onSurfaceVariant,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+            ),
           ),
         ),
       ),

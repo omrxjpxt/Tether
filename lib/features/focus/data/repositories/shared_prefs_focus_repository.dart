@@ -52,6 +52,7 @@ class SharedPrefsFocusRepository implements FocusRepository {
   @override
   Future<void> addFocusSession(FocusSession session) async {
     final sessions = await getFocusSessions();
+    if (sessions.any((s) => s.id == session.id)) return;
     sessions.add(session);
     await saveFocusSessions(sessions);
   }

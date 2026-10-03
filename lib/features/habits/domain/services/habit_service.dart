@@ -41,36 +41,32 @@ class HabitService {
 
   static int currentStreak(Habit habit, DateTime now) {
     bool todayCompleted = isHabitCompletedToday(habit, now);
-    DateTime currentDate = todayCompleted ? now : now.subtract(const Duration(days: 1));
+    DateTime currentDate = todayCompleted ? now : DateUtilsLocal.addDays(now, -1);
+    final habitCreatedDate = DateTime(habit.createdAt.year, habit.createdAt.month, habit.createdAt.day);
     
     int streak = 0;
     while (true) {
-      if (currentDate.isBefore(habit.createdAt) && !DateUtilsLocal.isSameLocalDay(currentDate, habit.createdAt)) {
-        break;
-      }
-
       bool isCompleted = isHabitCompletedOnDate(habit, currentDate);
       bool isExpected = isHabitExpectedOnDate(habit, currentDate);
+
+      final currentCalendarDate = DateTime(currentDate.year, currentDate.month, currentDate.day);
+      if (!isCompleted && currentCalendarDate.isBefore(habitCreatedDate)) {
+        break;
+      }
 
       if (isCompleted) {
         streak++;
       } else {
         if (habit.frequency.type == FrequencyType.timesPerWeek) {
-          // Check if the week of currentDate met the target.
           final start = DateUtilsLocal.startOfWeek(currentDate);
-          
-          // Count completions in this week up to 'currentDate' or the whole week?
-          // If the week is completely in the past, and we failed the target, we break.
-          // If we are currently in this week, and we can still meet the target, we don't break.
           int weekCompletions = 0;
           for (int i = 0; i <= 6; i++) {
-            if (isHabitCompletedOnDate(habit, start.add(Duration(days: i)))) {
+            if (isHabitCompletedOnDate(habit, DateUtilsLocal.addDays(start, i))) {
               weekCompletions++;
             }
           }
           final target = habit.frequency.timesPerWeek ?? 1;
           
-          // If the week is over and target not met, break streak.
           if (currentDate.weekday == DateTime.sunday && weekCompletions < target) {
             break;
           }
@@ -78,7 +74,7 @@ class HabitService {
           break;
         }
       }
-      currentDate = currentDate.subtract(const Duration(days: 1));
+      currentDate = DateUtilsLocal.addDays(currentDate, -1);
     }
     return streak;
   }
@@ -97,8 +93,9 @@ class HabitService {
   }
 
   static bool missedYesterday(Habit habit, DateTime now) {
-    final yesterday = now.subtract(const Duration(days: 1));
-    if (yesterday.isBefore(habit.createdAt) && !DateUtilsLocal.isSameLocalDay(yesterday, habit.createdAt)) {
+    final yesterday = DateUtilsLocal.addDays(now, -1);
+    final habitCreatedDate = DateTime(habit.createdAt.year, habit.createdAt.month, habit.createdAt.day);
+    if (DateTime(yesterday.year, yesterday.month, yesterday.day).isBefore(habitCreatedDate)) {
       return false;
     }
     return isHabitExpectedOnDate(habit, yesterday) && !isHabitCompletedOnDate(habit, yesterday);
@@ -110,9 +107,10 @@ class HabitService {
 
   static int consecutiveMisses(Habit habit, DateTime now) {
     int misses = 0;
-    DateTime currentDate = now.subtract(const Duration(days: 1));
+    DateTime currentDate = DateUtilsLocal.addDays(now, -1);
+    final habitCreatedDate = DateTime(habit.createdAt.year, habit.createdAt.month, habit.createdAt.day);
     while (true) {
-      if (currentDate.isBefore(habit.createdAt) && !DateUtilsLocal.isSameLocalDay(currentDate, habit.createdAt)) {
+      if (DateTime(currentDate.year, currentDate.month, currentDate.day).isBefore(habitCreatedDate)) {
         break;
       }
       if (isHabitExpectedOnDate(habit, currentDate)) {
@@ -122,7 +120,7 @@ class HabitService {
           break;
         }
       }
-      currentDate = currentDate.subtract(const Duration(days: 1));
+      currentDate = DateUtilsLocal.addDays(currentDate, -1);
     }
     return misses;
   }
@@ -134,7 +132,7 @@ class HabitService {
       if (isHabitCompletedOnDate(habit, current)) {
         count++;
       }
-      current = current.add(const Duration(days: 1));
+      current = DateUtilsLocal.addDays(current, 1);
     }
     return count;
   }
@@ -146,7 +144,7 @@ class HabitService {
       if (isHabitExpectedOnDate(habit, current)) {
         count++;
       }
-      current = current.add(const Duration(days: 1));
+      current = DateUtilsLocal.addDays(current, 1);
     }
     // Handle timesPerWeek roughly by number of weeks
     if (habit.frequency.type == FrequencyType.timesPerWeek) {
@@ -173,7 +171,7 @@ class HabitService {
   static List<bool> last7Days(Habit habit, DateTime now) {
     final result = <bool>[];
     for (int i = 6; i >= 0; i--) {
-      final date = now.subtract(Duration(days: i));
+      final date = DateUtilsLocal.addDays(now, -i);
       result.add(isHabitCompletedOnDate(habit, date));
     }
     return result;

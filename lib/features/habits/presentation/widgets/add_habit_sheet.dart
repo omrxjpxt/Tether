@@ -407,15 +407,22 @@ class _AddHabitSheetState extends ConsumerState<AddHabitSheet> {
                         ),
                       ),
                       if (_reminderTime != null)
-                        GestureDetector(
-                          onTap: () {
-                            HapticFeedback.selectionClick();
-                            setState(() => _reminderTime = null);
-                          },
-                          child: Icon(
-                            Icons.close,
-                            size: 16,
-                            color: colors.onSurfaceVariant,
+                        Semantics(
+                          button: true,
+                          label: 'Remove reminder',
+                          child: GestureDetector(
+                            onTap: () {
+                              HapticFeedback.selectionClick();
+                              setState(() => _reminderTime = null);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.close,
+                                size: 16,
+                                color: colors.onSurfaceVariant,
+                              ),
+                            ),
                           ),
                         )
                       else

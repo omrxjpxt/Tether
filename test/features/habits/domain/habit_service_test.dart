@@ -66,5 +66,37 @@ void main() {
       // Missed yesterday (day 1) and day before yesterday (day 2)
       expect(HabitService.consecutiveMisses(h, now), 2);
     });
+
+    test('longestStreak calculates maximum continuous run', () {
+      final h = habit.copyWith(
+        createdAt: DateTime(2026, 8, 1),
+        completedDates: [
+          '2026-09-01',
+        '2026-09-02',
+        '2026-09-03', // run of 3
+        '2026-09-10',
+        '2026-09-11',
+        '2026-09-12',
+        '2026-09-13',
+        '2026-09-14', // run of 5
+        '2026-09-20',
+      ]);
+      expect(HabitService.longestStreak(h), 5);
+    });
+
+    test('timesPerWeek frequency expected completions', () {
+      final tpwHabit = habit.copyWith(
+        frequency: HabitFrequency.timesPerWeek(3),
+      );
+      final weekStart = DateTime(2026, 9, 28);
+      final weekEnd = DateUtilsLocal.endOfWeek(weekStart);
+      expect(HabitService.expectedCompletions(tpwHabit, weekStart, weekEnd), 3);
+    });
+
+    test('last7Days returns exactly 7 booleans for the past 7 days', () {
+      final history = HabitService.last7Days(habit, now);
+      expect(history.length, 7);
+      expect(history.first, isA<bool>());
+    });
   });
 }

@@ -117,4 +117,48 @@ void main() {
     expect(sessions.first.completed, true);
     expect(prefs.getString('active_timer_v1'), isNull);
   });
+
+  test('Timer re-initialization does not resurrect cleared timer or duplicate sessions', () async {
+    final now = DateTime.now();
+    final thirtyMinutesAgo = now.subtract(const Duration(minutes: 30));
+    final activeTimerJson = jsonEncode({
+      'state': 'running',
+      'targetDurationMinutes': 25,
+      'startedAt': thirtyMinutesAgo.toIso8601String(),
+      'elapsedSecondsBeforePause': 0,
+    });
+
+    SharedPreferences.setMockInitialValues({
+      'active_timer_v1': activeTimerJson,
+    });
+    final prefs = await SharedPreferences.getInstance();
+
+    final container1 = ProviderContainer(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+      ],
+    );
+
+    // Initial read causes auto-completion and saves session
+    final timer1 = container1.read(timerProvider);
+    expect(timer1.state, TimerState.completed);
+    await Future.delayed(const Duration(milliseconds: 50));
+    expect(prefs.getString('active_timer_v1'), isNull);
+
+    final sessionsAfterFirst = await container1.read(focusRepositoryProvider).getFocusSessions();
+    expect(sessionsAfterFirst.length, 1);
+
+    // Simulate new app launch / new container with same SharedPreferences
+    final container2 = ProviderContainer(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+      ],
+    );
+
+    final timer2 = container2.read(timerProvider);
+    expect(timer2.state, TimerState.idle);
+
+    final sessionsAfterSecond = await container2.read(focusRepositoryProvider).getFocusSessions();
+    expect(sessionsAfterSecond.length, 1); // No duplicates
+  });
 }

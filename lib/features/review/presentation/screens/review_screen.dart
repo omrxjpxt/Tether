@@ -76,20 +76,48 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(24, 40, 24, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        'Weekly Review',
-                        style: AppTypography.headingLarge,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Weekly Review',
+                            style: AppTypography.headingLarge,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            dateRange,
+                            style: AppTypography.caption.copyWith(
+                              color: colors.onSurfaceVariant,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        dateRange,
-                        style: AppTypography.caption.copyWith(
-                          color: colors.onSurfaceVariant,
-                          letterSpacing: 0.2,
-                        ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.chevron_left, size: 22),
+                            onPressed: () {
+                              HapticFeedback.selectionClick();
+                              ref.read(reviewWeekProvider.notifier).state =
+                                  DateUtilsLocal.addDays(weekStart, -7);
+                            },
+                            tooltip: 'Previous week',
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.chevron_right, size: 22),
+                            onPressed: () {
+                              HapticFeedback.selectionClick();
+                              ref.read(reviewWeekProvider.notifier).state =
+                                  DateUtilsLocal.addDays(weekStart, 7);
+                            },
+                            tooltip: 'Next week',
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -98,6 +126,37 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
               
               habitsAsync.when(
                 data: (habits) {
+                  final now = DateTime.now();
+                  final currentWeekStart = DateUtilsLocal.startOfWeek(now);
+                  final isFutureWeek = weekStart.isAfter(currentWeekStart);
+
+                  if (isFutureWeek) {
+                    return SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
+                        child: Column(
+                          children: [
+                            Text(
+                              "This week hasn't started yet.",
+                              style: AppTypography.body.copyWith(
+                                color: colors.onSurfaceVariant,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Check back once this week begins.',
+                              style: AppTypography.caption.copyWith(
+                                color: colors.outline,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
                   if (habits.isEmpty) {
                     return SliverToBoxAdapter(
                       child: Padding(
@@ -105,7 +164,7 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                         child: Column(
                           children: [
                             Text(
-                              'Your first week is still ahead.',
+                              'Your week is just getting started.',
                               style: AppTypography.body.copyWith(
                                 color: colors.onSurfaceVariant,
                               ),
@@ -137,8 +196,8 @@ class _ReviewScreenState extends ConsumerState<ReviewScreen> with WidgetsBinding
                     totalCompleted += actual;
 
                     for (int i = 0; i < 7; i++) {
-                      final d = weekStart.add(Duration(days: i));
-                      if (HabitService.isHabitCompletedToday(habit, d)) {
+                      final d = DateUtilsLocal.addDays(weekStart, i);
+                      if (HabitService.isHabitCompletedOnDate(habit, d)) {
                         weekConsistency[i] = true;
                       }
                     }

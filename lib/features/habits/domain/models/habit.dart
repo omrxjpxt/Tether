@@ -59,20 +59,34 @@ class Habit {
 
   factory Habit.fromJson(Map<String, dynamic> json) {
     TimeOfDay? parsedReminder;
-    if (json['reminderTime'] != null) {
+    if (json['reminderTime'] != null && json['reminderTime'] is String) {
       final parts = (json['reminderTime'] as String).split(':');
       if (parts.length == 2) {
-        parsedReminder = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+        final h = int.tryParse(parts[0]);
+        final m = int.tryParse(parts[1]);
+        if (h != null && m != null && h >= 0 && h < 24 && m >= 0 && m < 60) {
+          parsedReminder = TimeOfDay(hour: h, minute: m);
+        }
       }
+    }
+
+    DateTime parsedCreated = DateTime.now();
+    if (json['createdAt'] != null && json['createdAt'] is String) {
+      parsedCreated = DateTime.tryParse(json['createdAt'] as String) ?? DateTime.now();
     }
 
     return Habit(
       id: json['id'] as String? ?? '',
       trigger: json['trigger'] as String? ?? '',
       action: json['action'] as String? ?? '',
-      frequency: json['frequency'] != null ? HabitFrequency.fromJson(json['frequency'] as Map<String, dynamic>) : HabitFrequency.daily(),
-      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : DateTime.now(),
-      completedDates: (json['completedDates'] as List<dynamic>?)?.cast<String>() ?? [],
+      frequency: json['frequency'] is Map<String, dynamic>
+          ? HabitFrequency.fromJson(json['frequency'] as Map<String, dynamic>)
+          : HabitFrequency.daily(),
+      createdAt: parsedCreated,
+      completedDates: (json['completedDates'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
       reminderTime: parsedReminder,
       archived: json['archived'] as bool? ?? false,
     );

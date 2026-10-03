@@ -26,7 +26,7 @@ class HabitListItem extends ConsumerWidget {
     
     // Calculate streak
     final streak = HabitService.currentStreak(habit, now);
-    String streakText = '$streak days';
+    String streakText = streak == 1 ? '1 day' : '$streak days';
     
     if (habit.frequency.type == FrequencyType.timesPerWeek) {
       final target = habit.frequency.timesPerWeek ?? 1;
@@ -81,8 +81,8 @@ class HabitListItem extends ConsumerWidget {
           },
           behavior: HitTestBehavior.opaque,
           child: Container(
-            width: 40,
-            height: 40,
+            width: 44,
+            height: 44,
             alignment: Alignment.center,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),

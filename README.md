@@ -234,7 +234,7 @@ flutter pub get
 # 3. Run static analysis
 flutter analyze
 
-# 4. Run test suite (43 tests passing)
+# 4. Run test suite (54 tests passing)
 flutter test
 ```
 
@@ -304,7 +304,7 @@ Static production artifacts are generated in `build/web/`.
 
 ## Test Suite Coverage
 
-Tether maintains comprehensive automated test coverage across unit, domain, service, provider, and widget layers:
+Tether maintains comprehensive automated test coverage across unit, domain, service, provider, and widget layers (54 tests across 14 suites):
 
 | Test Suite | Scope |
 | :--- | :--- |
@@ -316,6 +316,7 @@ Tether maintains comprehensive automated test coverage across unit, domain, serv
 | `shared_prefs_habit_repository_test.dart` | Habit serialization, corrupt JSON handling, and CRUD operations |
 | `timer_provider_test.dart` | Timer countdown, pause/resume, completion events, and state persistence |
 | `review_providers_test.dart` | Weekly summary computations and reflection notes updates |
+| `review_screen_test.dart` | Weekly Review screen rendering, navigation, and empty state messaging |
 | `settings_provider_test.dart` | Theme mode switching, onboarding flag updates, and persistence |
 | `settings_screen_test.dart` | Appearance selection, notifications panel, and backup controls |
 | `today_screen_test.dart` | Empty states, habit lists, and focus card interactions |

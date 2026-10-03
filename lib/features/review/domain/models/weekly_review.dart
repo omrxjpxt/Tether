@@ -31,13 +31,19 @@ class WeeklyReview {
 
   factory WeeklyReview.fromJson(Map<String, dynamic> json) {
     return WeeklyReview(
-      weekStartDate: DateTime.parse(json['weekStartDate'] as String),
-      weekEndDate: DateTime.parse(json['weekEndDate'] as String),
-      habitsCompleted: json['habitsCompleted'] as int,
-      habitsExpected: json['habitsExpected'] as int,
-      focusSessions: json['focusSessions'] as int,
-      notes: json['notes'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      weekStartDate: json['weekStartDate'] != null
+          ? DateTime.tryParse(json['weekStartDate'] as String) ?? DateTime.now()
+          : DateTime.now(),
+      weekEndDate: json['weekEndDate'] != null
+          ? DateTime.tryParse(json['weekEndDate'] as String) ?? DateTime.now()
+          : DateTime.now(),
+      habitsCompleted: (json['habitsCompleted'] as num?)?.toInt() ?? 0,
+      habitsExpected: (json['habitsExpected'] as num?)?.toInt() ?? 0,
+      focusSessions: (json['focusSessions'] as num?)?.toInt() ?? 0,
+      notes: json['notes'] as String? ?? '',
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'] as String) ?? DateTime.now()
+          : DateTime.now(),
     );
   }
 }

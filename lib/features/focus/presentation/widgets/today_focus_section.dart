@@ -116,26 +116,36 @@ class _TodayFocusSectionState extends ConsumerState<TodayFocusSection> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 2),
-                        child: GestureDetector(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            ref.read(dailyFocusProvider.notifier).toggleCompleted();
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: focus.completed ? colors.primary : Colors.transparent,
-                              border: Border.all(
-                                color: focus.completed ? colors.primary : theme.dividerColor,
-                                width: 1.5,
+                        child: Semantics(
+                          button: true,
+                          label: focus.completed ? 'Completed' : 'Mark focus complete',
+                          child: GestureDetector(
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              ref.read(dailyFocusProvider.notifier).toggleCompleted();
+                            },
+                            behavior: HitTestBehavior.opaque,
+                            child: Container(
+                              width: 44,
+                              height: 44,
+                              alignment: Alignment.center,
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                width: 24,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: focus.completed ? colors.primary : Colors.transparent,
+                                  border: Border.all(
+                                    color: focus.completed ? colors.primary : theme.dividerColor,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: focus.completed 
+                                    ? Icon(Icons.check, size: 14, color: colors.onPrimary)
+                                    : null,
                               ),
                             ),
-                            child: focus.completed 
-                                ? Icon(Icons.check, size: 14, color: colors.onPrimary)
-                                : null,
                           ),
                         ),
                       ),

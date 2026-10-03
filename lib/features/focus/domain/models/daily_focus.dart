@@ -22,10 +22,10 @@ class DailyFocus {
 
   factory DailyFocus.fromJson(Map<String, dynamic> json) {
     return DailyFocus(
-      dateKey: json['dateKey'] as String,
-      priorityText: json['priorityText'] as String,
-      completed: json['completed'] as bool,
-      focusSessionCount: json['focusSessionCount'] as int? ?? 0,
+      dateKey: json['dateKey'] as String? ?? '',
+      priorityText: json['priorityText'] as String? ?? '',
+      completed: json['completed'] as bool? ?? false,
+      focusSessionCount: (json['focusSessionCount'] as num?)?.toInt() ?? 0,
     );
   }
 }

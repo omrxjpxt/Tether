@@ -48,6 +48,26 @@ void main() {
       expect(end.year, 2026);
       expect(end.month, 10);
       expect(end.day, 4); // Sunday
+      expect(end.hour, 23);
+      expect(end.minute, 59);
+      expect(end.second, 59);
+    });
+
+    test('addDays handles calendar days across month and year boundaries correctly', () {
+      final leapYear = DateTime(2028, 2, 28);
+      final leapNext = DateUtilsLocal.addDays(leapYear, 1);
+      expect(leapNext.day, 29); // Leap year Feb 29
+
+      final endOfYear = DateTime(2026, 12, 31, 10, 0);
+      final newYear = DateUtilsLocal.addDays(endOfYear, 1);
+      expect(newYear.year, 2027);
+      expect(newYear.month, 1);
+      expect(newYear.day, 1);
+
+      final prevDay = DateUtilsLocal.addDays(newYear, -1);
+      expect(prevDay.year, 2026);
+      expect(prevDay.month, 12);
+      expect(prevDay.day, 31);
     });
   });
 }

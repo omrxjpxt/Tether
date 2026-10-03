@@ -25,11 +25,11 @@ class FocusSession {
 
   factory FocusSession.fromJson(Map<String, dynamic> json) {
     return FocusSession(
-      id: json['id'] as String,
-      date: DateTime.parse(json['date'] as String),
-      durationMinutes: json['durationMinutes'] as int,
-      completed: json['completed'] as bool,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      id: json['id'] as String? ?? '',
+      date: json['date'] != null ? DateTime.tryParse(json['date'] as String) ?? DateTime.now() : DateTime.now(),
+      durationMinutes: (json['durationMinutes'] as num?)?.toInt() ?? 25,
+      completed: json['completed'] as bool? ?? true,
+      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt'] as String) ?? DateTime.now() : DateTime.now(),
     );
   }
 }

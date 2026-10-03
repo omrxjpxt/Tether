@@ -32,8 +32,10 @@ class HabitFrequency {
     );
     return HabitFrequency(
       type: type,
-      timesPerWeek: json['timesPerWeek'] as int?,
-      customDays: (json['customDays'] as List<dynamic>?)?.cast<int>(),
+      timesPerWeek: (json['timesPerWeek'] as num?)?.toInt(),
+      customDays: (json['customDays'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
+          .toList(),
     );
   }
 }

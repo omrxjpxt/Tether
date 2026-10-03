@@ -7,7 +7,9 @@ class FocusService {
   }
 
   static List<FocusSession> getSessionsForDateRange(List<FocusSession> sessions, DateTime start, DateTime end) {
-    return sessions.where((s) => !s.date.isBefore(start) && !s.date.isAfter(end)).toList();
+    final rangeStart = DateTime(start.year, start.month, start.day);
+    final rangeEnd = DateTime(end.year, end.month, end.day, 23, 59, 59, 999);
+    return sessions.where((s) => !s.date.isBefore(rangeStart) && !s.date.isAfter(rangeEnd)).toList();
   }
 
   static int getTotalDuration(List<FocusSession> sessions) {
