@@ -225,8 +225,8 @@ All records are serialized locally via JSON in `SharedPreferences`:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/omrxjpxt/Tether--Habit-Tracker.git
-cd "Tether- Habit Tracker"
+git clone https://github.com/omrxjpxt/Tether.git
+cd Tether
 
 # 2. Install dependencies
 flutter pub get
