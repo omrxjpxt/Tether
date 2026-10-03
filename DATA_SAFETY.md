@@ -40,7 +40,6 @@ When completing the **App permissions** section in Play Console:
 | Permission | Android Manifest Key | Play Console Justification |
 | :--- | :--- | :--- |
 | **Post Notifications** | `android.permission.POST_NOTIFICATIONS` | Required on Android 13+ (API 33+) to alert the user at their scheduled reminder times. |
-| **Schedule Exact Alarm** | `android.permission.SCHEDULE_EXACT_ALARM` | Required to trigger local habit reminders precisely at the exact minute configured by the user. Category: Reminders / Productivity. |
 | **Receive Boot Completed** | `android.permission.RECEIVE_BOOT_COMPLETED` | Required to reschedule active user-configured local alarms if the device reboots or restarts. |
 | **Vibrate** | `android.permission.VIBRATE` | Required for tactile haptic feedback during timer state transitions and habit completion checks. |
 

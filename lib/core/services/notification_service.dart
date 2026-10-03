@@ -83,9 +83,6 @@ class LocalNotificationService implements NotificationService {
           AndroidFlutterLocalNotificationsPlugin>();
       if (androidImpl != null) {
         final granted = await androidImpl.requestNotificationsPermission();
-        try {
-          await androidImpl.requestExactAlarmsPermission();
-        } catch (_) {}
         return granted ?? false;
       }
     } else if (Platform.isIOS || Platform.isMacOS) {
@@ -167,7 +164,7 @@ class LocalNotificationService implements NotificationService {
         body: body,
         scheduledDate: finalScheduledDate,
         notificationDetails: notificationDetails,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
         matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
       );
     }

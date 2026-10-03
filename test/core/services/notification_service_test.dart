@@ -133,5 +133,46 @@ void main() {
       await mock.cancelHabitReminder(weekdayHabit.id);
       expect(mock.scheduledNotifications.length, 7);
     });
+
+    test('cancelHabitReminder clears all weekday slots for the habit', () async {
+      final mock = MockNotificationService();
+      final habit = Habit(
+        id: 'habit-slots',
+        trigger: 'trigger',
+        action: 'action',
+        frequency: HabitFrequency.daily(),
+        reminderTime: const TimeOfDay(hour: 7, minute: 30),
+        createdAt: DateTime.now(),
+      );
+
+      await mock.scheduleHabitReminder(habit);
+      expect(mock.scheduledNotifications.length, 7);
+
+      await mock.cancelHabitReminder(habit.id);
+      expect(mock.scheduledNotifications.isEmpty, isTrue);
+    });
+
+    test('rescheduleAllHabitReminders cancels archived or no-reminder habits', () async {
+      final mock = MockNotificationService();
+      final activeHabit = Habit(
+        id: 'active-1',
+        trigger: 'trigger',
+        action: 'action',
+        frequency: HabitFrequency.daily(),
+        reminderTime: const TimeOfDay(hour: 7, minute: 30),
+        createdAt: DateTime.now(),
+      );
+      final noReminderHabit = Habit(
+        id: 'no-reminder-1',
+        trigger: 'trigger',
+        action: 'action',
+        frequency: HabitFrequency.daily(),
+        reminderTime: null,
+        createdAt: DateTime.now(),
+      );
+
+      await mock.rescheduleAllHabitReminders([activeHabit, noReminderHabit]);
+      expect(mock.scheduledNotifications.length, 7);
+    });
   });
 }

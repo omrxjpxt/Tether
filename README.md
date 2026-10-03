@@ -74,7 +74,7 @@ Tether helps you build sustainable daily routines by anchoring new micro-actions
 | Platform | Status | Reminders / Notifications |
 | :--- | :--- | :--- |
 | **iOS** | Supported | Full scheduled & repeating local notifications via UserNotifications |
-| **Android** | Supported | Full scheduled & repeating notifications with exact alarm permissions |
+| **Android** | Supported | Battery-friendly local notifications via AlarmManager allow-while-idle & boot receiver |
 | **macOS** | Supported | Local notifications via Darwin notification service |
 | **Web (Chrome)** | Supported | Platform-guarded: Informational badge indicating mobile reminder availability |
 
@@ -234,7 +234,7 @@ flutter pub get
 # 3. Run static analysis
 flutter analyze
 
-# 4. Run test suite (54 tests passing)
+# 4. Run test suite (56 tests passing)
 flutter test
 ```
 
@@ -304,7 +304,7 @@ Static production artifacts are generated in `build/web/`.
 
 ## Test Suite Coverage
 
-Tether maintains comprehensive automated test coverage across unit, domain, service, provider, and widget layers (54 tests across 14 suites):
+Tether maintains comprehensive automated test coverage across unit, domain, service, provider, and widget layers (56 tests across 14 suites):
 
 | Test Suite | Scope |
 | :--- | :--- |

@@ -88,7 +88,6 @@ Build consistent routines with intention. Download Tether today.
 ## 5. Permissions Explanation for Reviewers
 
 - **Post Notifications (`POST_NOTIFICATIONS`):** Used solely to schedule local habit reminders configured by the user.
-- **Schedule Exact Alarm (`SCHEDULE_EXACT_ALARM`):** Used to trigger reminders accurately at the designated time.
 - **Receive Boot Completed (`RECEIVE_BOOT_COMPLETED`):** Restores user-configured reminder schedules when the device restarts.
 - **Vibrate (`VIBRATE`):** Delivers tactile haptic feedback during timer state transitions and habit completion.
 

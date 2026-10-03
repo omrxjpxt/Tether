@@ -38,7 +38,6 @@ Tether requests only the minimum device permissions necessary to provide its cor
 | Permission | Purpose |
 | :--- | :--- |
 | **Notifications (`POST_NOTIFICATIONS`)** | Used exclusively to deliver scheduled local habit reminders that you explicitly configure. Notifications are generated locally by your device operating system, not received via remote push servers. |
-| **Exact Alarms (`SCHEDULE_EXACT_ALARM`)** | Used on Android to ensure habit reminders fire precisely at the user-scheduled time rather than in deferred batches. |
 | **Receive Boot Completed (`RECEIVE_BOOT_COMPLETED`)** | Used on Android to reschedule your active local habit reminders after your device reboots. |
 | **Vibration (`VIBRATE`)** | Used to provide haptic feedback when completing habits, starting timers, or pausing intervals. |
 
