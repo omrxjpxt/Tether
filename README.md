@@ -325,6 +325,15 @@ Tether maintains comprehensive automated test coverage across unit, domain, serv
 
 ---
 
+## Production & Release Documentation
+
+- [Privacy Policy](file:///Users/omgangwar/Documents/Projects/Tether-%20Habit%20Tracker/PRIVACY_POLICY.md): Official local-first privacy policy and disclosures.
+- [Google Play Data Safety](file:///Users/omgangwar/Documents/Projects/Tether-%20Habit%20Tracker/DATA_SAFETY.md): Play Console Data Safety reference and field mappings.
+- [Play Store Listing](file:///Users/omgangwar/Documents/Projects/Tether-%20Habit%20Tracker/PLAY_STORE.md): App title, short/full descriptions, feature highlights, and screenshot specifications.
+- [Play Testing & Release Guide](file:///Users/omgangwar/Documents/Projects/Tether-%20Habit%20Tracker/PLAY_TESTING.md): Closed testing (14-day / 20-tester requirement), internal testing track, and production application steps.
+
+---
+
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
