@@ -267,19 +267,45 @@ Artifacts are generated in:
 - `build/app/outputs/flutter-apk/app-release.apk`
 - `build/app/outputs/bundle/release/app-release.aab`
 
-#### Android Signing
-1. Generate an upload keystore:
+#### Android Production Upload Signing
+1. **Upload Keystore Setup**:
+   The production upload key is stored outside the repository at `~/tether-upload-keystore.jks` with the alias `tether-upload`.
+   If generating a new upload key:
    ```bash
-   keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+   keytool -genkey -v -keystore ~/tether-upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias tether-upload
    ```
-2. Reference the keystore in `android/key.properties`:
+
+2. **Configure `android/key.properties`**:
+   Create a local file at `android/key.properties` (never committed to git) with the following structure:
    ```properties
-   storePassword=<password>
-   keyPassword=<password>
-   keyAlias=upload
-   storeFile=<path_to_store_file>
+   storePassword=<developer-supplied-password>
+   keyPassword=<developer-supplied-password>
+   keyAlias=tether-upload
+   storeFile=/Users/omgangwar/tether-upload-keystore.jks
    ```
-3. Update `android/app/build.gradle.kts` release signing configuration to read from `key.properties`.
+   *(Note: `storeFile=~/tether-upload-keystore.jks` is also automatically expanded).*
+
+3. **Security Warning**:
+   > **Important Security Warning**: Never commit `key.properties` or the keystore. Keep your keystore securely backed up. If you lose your upload key, you will have to request a reset through Google Play Console support.
+
+4. **Production Release Build Commands**:
+   ```bash
+   flutter clean
+   flutter pub get
+   flutter analyze
+   flutter test
+   flutter build apk --release
+   flutter build appbundle --release
+   ```
+   Artifacts are output to:
+   - APK: `build/app/outputs/flutter-apk/app-release.apk`
+   - AAB: `build/app/outputs/bundle/release/app-release.aab`
+
+5. **Signature Verification**:
+   Verify that release artifacts are signed with the upload key:
+   ```bash
+   jarsigner -verify -verbose -certs build/app/outputs/bundle/release/app-release.aab
+   ```
 
 ### iOS Build
 1. Open the iOS project in Xcode:

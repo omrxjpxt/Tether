@@ -1,3 +1,4 @@
+import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -7,10 +8,40 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-val keystorePropertiesFile = rootProject.file("key.properties")
+// Locate key.properties in android/ (rootProject) or android/app/ (project)
+val keystorePropertiesFile = rootProject.file("key.properties").takeIf { it.exists() }
+    ?: project.file("key.properties").takeIf { it.exists() }
+
 val keystoreProperties = Properties()
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+if (keystorePropertiesFile != null && keystorePropertiesFile.exists()) {
+    FileInputStream(keystorePropertiesFile).use { stream ->
+        keystoreProperties.load(stream)
+    }
+}
+
+// Resolve keystore file path supporting ~, absolute, and relative paths
+fun resolveKeystoreFile(rawPath: String?): File? {
+    if (rawPath.isNullOrBlank()) return null
+    val trimmed = rawPath.trim()
+    return when {
+        trimmed.startsWith("~/") -> File(System.getProperty("user.home"), trimmed.removePrefix("~/"))
+        trimmed.startsWith("~\\") -> File(System.getProperty("user.home"), trimmed.removePrefix("~\\"))
+        File(trimmed).isAbsolute -> File(trimmed)
+        rootProject.file(trimmed).exists() -> rootProject.file(trimmed)
+        else -> project.file(trimmed)
+    }
+}
+
+val configuredStoreFile = resolveKeystoreFile(keystoreProperties.getProperty("storeFile"))
+val isSigningConfigured = keystorePropertiesFile != null &&
+    !keystoreProperties.getProperty("keyAlias").isNullOrBlank() &&
+    !keystoreProperties.getProperty("keyPassword").isNullOrBlank() &&
+    !keystoreProperties.getProperty("storePassword").isNullOrBlank() &&
+    configuredStoreFile != null &&
+    configuredStoreFile.exists()
+
+if (keystorePropertiesFile != null && !isSigningConfigured) {
+    logger.warn("WARNING: key.properties found at ${keystorePropertiesFile.absolutePath}, but keystore file or credentials are invalid. Falling back to debug signing.")
 }
 
 android {
@@ -38,18 +69,18 @@ android {
 
     signingConfigs {
         create("release") {
-            if (keystorePropertiesFile.exists()) {
-                keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-                storePassword = keystoreProperties["storePassword"] as String
+            if (isSigningConfigured) {
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+                storeFile = configuredStoreFile
+                storePassword = keystoreProperties.getProperty("storePassword")
             }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = if (keystorePropertiesFile.exists()) {
+            signingConfig = if (isSigningConfigured) {
                 signingConfigs.getByName("release")
             } else {
                 // Fallback to debug keystore for local non-signing builds
