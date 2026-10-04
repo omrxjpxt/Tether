@@ -25,11 +25,9 @@ android {
     }
 
     defaultConfig {
-        // PRODUCTION APPLICATION ID PLACEHOLDER:
-        // Google Play Console rejects packages starting with 'com.example'.
-        // Before submitting to Google Play, replace "com.placeholder.tether" with your registered
-        // production Application ID (e.g., "app.tether.habits" or "com.omgangwar.tether").
-        applicationId = "com.placeholder.tether"
+        // PRODUCTION APPLICATION ID:
+        // Registered production Application ID for Google Play.
+        applicationId = "app.tether.habits"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
